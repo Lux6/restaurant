@@ -638,7 +638,7 @@ public class RestaurantCopia2 {
     private static void Menus(String[] Menu){
         for(int i = 0;i<Menu.length;i++){
             System.out.print(Menu[i]);
-            iLlegirOpcioMenur();
+           // iLlegirOpcioMenur();
         }
     }
 }
