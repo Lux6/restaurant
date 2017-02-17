@@ -641,4 +641,19 @@ public class RestaurantCopia2 {
            // iLlegirOpcioMenur();
         }
     }
+    private static int iLlegirOpcioMenu(){
+        Scanner sc = new Scanner(System.in);
+        
+        System.out.print("Introdueixi una opció: ");
+        int iOpcioMenu = sc.nextInt();
+        return iOpcioMenu; 
+    }
+    
+    private static String sLlegirOpcioMenu(){
+        Scanner sc = new Scanner(System.in);
+        
+        System.out.print("Introdueixi les dades: ");
+        String sOpcioMenu = sc.next();
+        return sOpcioMenu; 
+    }
 }
