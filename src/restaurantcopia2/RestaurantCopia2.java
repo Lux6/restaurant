@@ -12,12 +12,31 @@ public class RestaurantCopia2 {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         
-        String[] MenuPrincipal = {"------------\n RESTAURANT \n------------\n ",
-            "[1] Iniciar Sessio\n ",
-            "[2] Registrar-se\n ",
-            "[3] Recuperar Contrasenya\n ",
-            "[4] Tancar aplicació"};
+        String[] MenuPrincipal = {"------------\n RESTAURANT \n------------\n "
+            + "[1] Iniciar Sessio\n "
+            + "[2] Registrar-se\n "
+            + "[3] Recuperar Contrasenya\n "
+            + "[4] Tancar aplicació\n "};
         
+        String[] MenuReserves = {"---------------\n MENU RESERVES\n---------------\n "
+            + "[1] Sol·licitar reserva\n "
+            + "[2] Cancel·lar reserva\n "
+            + "[3] Buscar reserva\n "
+            + "[4] Modificar reserva\n "
+            + "[5] Tancar sessió\n "};
+        
+        String[] MenuModificarResserva = {"Indique que voleu modificar:\n "
+            + "[1] Nom\n "
+            + "[2] Nº de comensals\n "
+            + "[3] Dia\n "
+            + "[4] Mes\n "
+            + "[5] Tornar al menú\n "};
+        
+        String[] MenuGestioReserves = {"--------------------\n GESTIO DE RESERVES \n--------------------\n "
+            + "[1] Reserves per mes\n "
+            + "[2] Totes les reserves\n "
+            + "[3] Tancar Sessio"};
+            
         int iOpcioPrincipal;//Opcio menú
         int iOpcioReserva;//Opcio reserva
         int iOpcioSolicitud;//Opcio Sol·licitud Reserva
@@ -82,16 +101,13 @@ public class RestaurantCopia2 {
         sTUsuari[1][2] = "paco@gmail.com";//Correu
         sTUsuari[1][3] = "usu";//Tipus d'usuari
         //********************************
-        Menus(MenuPrincipal);
+        
         
         while(bOP == true){
-            /*System.out.println("------------\n RESTAURANT \n------------\n "
-                + "[1] Iniciar Sessio\n "
-                + "[2] Registrar-se\n "
-                + "[3] Recuperar Contrasenya\n "
-                + "[4] Tancar aplicació");*/
-            System.out.print("Escull una opció: ");
-            iOpcioPrincipal = sc.nextInt();
+            
+            Menus(MenuPrincipal);
+            iOpcioPrincipal = iLlegirOpcioMenu();
+            
             //Comprovar si l'usuari vol tancar el programa.
             if(iOpcioPrincipal == 4){
                 System.out.println("\033[34mAdeu!");
@@ -142,14 +158,8 @@ public class RestaurantCopia2 {
                             if(sTUsuari[iUsuari][3].equals("usu")){
                                 do{    
                                     //Menu principal
-                                    System.out.println("---------------\n MENU RESERVES\n---------------\n "
-                                        + "[1] Sol·licitar reserva\n "
-                                        + "[2] Cancel·lar reserva\n "
-                                        + "[3] Buscar reserva\n "
-                                        + "[4] Modificar reserva\n "
-                                        + "[5] Tancar sessió ");
-                                    System.out.print("Escull una opció: ");
-                                    iOpcioSolicitud = sc.nextInt();
+                                    Menus(MenuReserves);
+                                    iOpcioSolicitud = iLlegirOpcioMenu();
                     
                                     switch(iOpcioSolicitud){
                                         case 1:{ //SOLICITAR RESERVA
@@ -343,15 +353,9 @@ public class RestaurantCopia2 {
                                                             + "Dia: "+reserva[i].iDiaReserva+"\n"
                                                             + "Mes: "+sMeses[reserva[i].iMesReserva-1]+"\n"
                                                             + "Telefon y numero de registre: "+reserva[i].iTelefon);
-                            
-                                                        System.out.println("Indique que voleu modificar:\n "
-                                                            + "[1] Nom\n "
-                                                            + "[2] Nº de comensals\n "
-                                                            + "[3] Dia\n "
-                                                            + "[4] Mes\n "
-                                                            + "[5] Tornar al menú");
-                                                            System.out.print("Escull una opció: ");
-                                                            iOpcioModificar = sc.nextInt();
+                                                        
+                                                        Menus(MenuModificarResserva);
+                                                        iOpcioModificar = iLlegirOpcioMenu();
                             
                                                         switch(iOpcioModificar){
                                                             case 1:{ //MODIFICAR NOM
@@ -438,12 +442,9 @@ public class RestaurantCopia2 {
                             }else if(sTUsuari[iUsuari][3].equals("admin")){
                                 bAdmin = true;
                                 while(bAdmin == true){
-                                    System.out.println("--------------------\n GESTIO DE RESERVES \n--------------------\n "
-                                        +"[1] Reserves per mes\n "
-                                        +"[2] Totes les reserves\n "
-                                        +"[3] Tancar Sessio");
-                                    System.out.print("Escull una opcio: ");
-                                    iGestio = sc.nextInt();
+                                    
+                                    Menus(MenuGestioReserves);
+                                    iGestio = iLlegirOpcioMenu();
                                     
                                     
                                     switch (iGestio){
@@ -638,7 +639,6 @@ public class RestaurantCopia2 {
     private static void Menus(String[] Menu){
         for(int i = 0;i<Menu.length;i++){
             System.out.print(Menu[i]);
-            iLlegirOpcioMenu();
         }
     }
     private static int iLlegirOpcioMenu(){
@@ -646,6 +646,7 @@ public class RestaurantCopia2 {
         
         System.out.print("Introdueixi una opció: ");
         int iOpcioMenu = sc.nextInt();
+        
         return iOpcioMenu; 
     }
     
@@ -654,6 +655,7 @@ public class RestaurantCopia2 {
         
         System.out.print("Introdueixi les dades: ");
         String sOpcioMenu = sc.next();
+        
         return sOpcioMenu; 
     }
 }
