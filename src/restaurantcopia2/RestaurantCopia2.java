@@ -35,7 +35,7 @@ public class RestaurantCopia2 {
         String[] MenuGestioReserves = {"--------------------\n GESTIO DE RESERVES \n--------------------\n "
             + "[1] Reserves per mes\n "
             + "[2] Totes les reserves\n "
-            + "[3] Tancar Sessio"};
+            + "[3] Tancar Sessio\n "};
             
         int iOpcioPrincipal;//Opcio menú
         int iOpcioReserva;//Opcio reserva
@@ -68,6 +68,10 @@ public class RestaurantCopia2 {
         String[][] sTUsuari = new String[99][4];//Base de dades usuari
         String sConfirmar;//Variables confiramar reserva
         String sNomReserva;//Variable nom reserva
+        
+        String fNomReserva = "Introdueixi el nom al que vol fer la reserva: ";
+        String fUsuari = "Nom usuari: ";
+        String fContrasenya = "Contrasenya: ";
 
         //Base de dades reserva
         class TReserva{
@@ -124,16 +128,15 @@ public class RestaurantCopia2 {
                         
                         System.out.println("Escriu 'adeu' per tornar al menu");
                         //Demanar i guardar nom d'usuari
-                        System.out.print("Nom usuari: ");
-                        sUsuari = sc.next();
+                        sUsuari = sLlegirText(fUsuari);
                         //Comprovar si l'usuari vol cancel·lar l'inici de sessio
                         if(sUsuari.equals("adeu")){
                             System.out.println("\033[33mInici de sessió cancel·lat\033[30m");
                             break;
                         }
                         //Demanar i guardar contrasenya
-                        System.out.print("Contrasenya: ");
-                        sContrasenya = sc.next();
+                        
+                        sContrasenya = sLlegirText(fContrasenya);
                         
                         //L'usuari sempre serà incorrecte
                         bUsuariC = false;
@@ -221,9 +224,7 @@ public class RestaurantCopia2 {
                                                 }
                                                 
                                                 //Nom de la reserva
-                                                System.out.print("Introdueixi el nom al que vol fer la reserva: ");
-                                                sNomReserva = sc.nextLine();
-                                                sNomReserva = sc.nextLine();
+                                                sNomReserva = sLlegirText(fNomReserva);
                     
                                                 //Numero de telefon
                                                 while(true){
@@ -360,9 +361,11 @@ public class RestaurantCopia2 {
                                                         switch(iOpcioModificar){
                                                             case 1:{ //MODIFICAR NOM
                                                                 System.out.println("Nom actual "+ reserva[i].sNomReserva);
+                                                                
                                                                 System.out.print("Nou nom:: ");
                                                                 sNomReserva = sc.nextLine();
                                                                 sNomReserva = sc.nextLine();
+                                                                
                                                                 System.out.println("Nom modificat a " + sNomReserva);
                                                                 reserva[i].sNomReserva = sNomReserva;
                                                                 break;
@@ -657,5 +660,16 @@ public class RestaurantCopia2 {
         String sOpcioMenu = sc.next();
         
         return sOpcioMenu; 
+    }
+    
+    private static String sLlegirText(String Text){
+        Scanner sc = new Scanner(System.in);
+        
+        String sLectura;
+        
+        System.out.print(Text);
+        sLectura = sc.nextLine();
+        
+        return sLectura;
     }
 }
