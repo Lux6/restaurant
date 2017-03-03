@@ -6,9 +6,10 @@
 package restaurantcopia2;
 
 import java.util.Scanner;
+import java.sql.*;
 
 public class RestaurantCopia2 {
-
+    
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         
@@ -104,16 +105,7 @@ public class RestaurantCopia2 {
         String nComensalsReserva = "Introduexi el numero de comensals(1-11):\n -> "; //Text demanr comensals reserva
         String nTelReserva = "Introduexi el numero de telefon:\n -> "; //Text demanar Telefon reserva (Sol·licitar)
 
-        //Base de dades reserva
-        class TReserva{
-            int idReserva;
-            String sNomReserva;
-            int iDiaReserva;
-            int iMesReserva;
-            int iComensalsR;
-            long iTelefon;
-        }
-        String sMeses[ ] = {"Gener","Febrer","Març","Abril","Maig","Juny","Juliol","Agost","Septembre","Octubre","Novembre","Desembre"};
+        String sMeses[] = {"Gener","Febrer","Març","Abril","Maig","Juny","Juliol","Agost","Septembre","Octubre","Novembre","Desembre"};
                 
         TReserva reserva[] = new TReserva[1000];
         
@@ -133,7 +125,7 @@ public class RestaurantCopia2 {
         //Usuari comú
         sTUsuari[1][0] = "Manuel";//Nom
         sTUsuari[1][1] = "edu32";//Contrasenya
-        sTUsuari[1][2] = "paco@gmail.com";//Correu
+        sTUsuari[1][2] = "manuel@gmail.com";//Correu
         sTUsuari[1][3] = "usu";//Tipus d'usuari
         //********************************
         
@@ -438,7 +430,7 @@ public class RestaurantCopia2 {
                                                                 break;
                                                             }
                                                             default :{ //OPCIÓ INVALIDA
-                                                                System.out.println("\033[31m" + "*Opció invalida" + "\033[30m");
+                                                                sOpcioInvalida();
                                                             }
                                                         }
                            
@@ -525,7 +517,7 @@ public class RestaurantCopia2 {
                                         }
                                         
                                         default:{ //OPCIÓ INVALIDA
-                                            System.out.println("\033[31m" + "Has escollit una opció invalida" + "\033[30m");
+                                            sOpcioInvalida();
                                         }
                                     }
                                 }
@@ -582,7 +574,7 @@ public class RestaurantCopia2 {
                         if(bRegistreC == true){
                             //Guarda les dades de l'usuari
                             while(true){
-                                if(sTUsuari[iNRegistres][0]==null){//Busca una posicio buida
+                                if(sTUsuari[iNRegistres][0] == null){//Busca una posicio buida
                                     sTUsuari[iNRegistres][0] = sUsuari;
                                     sTUsuari[iNRegistres][1] = sContrasenya;
                                     sTUsuari[iNRegistres][2] = sCorreu;
@@ -643,7 +635,7 @@ public class RestaurantCopia2 {
                 }
                 //Opcio del menú incorrecte
                 default:{
-                    System.out.println("\033[31m" + "Has escollit una opció invalida" + "\033[30m");
+                    sOpcioInvalida();
                 }
             }
         }
@@ -661,15 +653,6 @@ public class RestaurantCopia2 {
         int iOpcioMenu = sc.nextInt();
         
         return iOpcioMenu; 
-    }
-    
-    private static String sLlegirOpcioMenu(){
-        Scanner sc = new Scanner(System.in);
-        
-        System.out.print("Introdueixi les dades:\n -> ");
-        String sOpcioMenu = sc.next();
-        
-        return sOpcioMenu; 
     }
     
     private static String sLlegirText(String Text){
@@ -692,5 +675,9 @@ public class RestaurantCopia2 {
         iNumero = sc.nextInt();
         
         return iNumero;
+    }
+    
+    private static void sOpcioInvalida(){
+        System.out.println("\033[31m" + "Has escollit una opció invalida" + "\033[30m");
     }
 }
