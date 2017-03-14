@@ -263,7 +263,7 @@ public class RestaurantCopia2 {
                                         }
                                         
                                         case 3:{ //BUSCAR RESERVA
-                                            
+                                            Menus(MenuBuscarReserva);
                                             iTelefon = sLlegirNumero(nTelefonReserva);
                                             
                                             if(iTelefon == 13){ //Comprova si vol cancel·lar la cerca
@@ -419,7 +419,7 @@ public class RestaurantCopia2 {
                                                     
                                                     //Busca les reserves del mes
                                                     for(int i = 0;i<1000;i++){
-                                                        if(reserva[i].iMesReserva == (iMes)){
+                                                        if(reserva[i].iMesReserva == (iMes) && reserva[i].iTelefon > 0){
                                                             System.out.println(" > RESERVA Nº"+ iNumeroReserva +" \n---------------\n"
                                                                 + "Nom: "+reserva[i].sNomReserva +"\n"
                                                                 + "Nº Comensals: "+reserva[i].iComensalsR +"\n"
@@ -437,7 +437,7 @@ public class RestaurantCopia2 {
                                         
                                         case 2:{ //TOTES LES RESERVES
                                             //Mostra totes les reserves
-                                            System.out.println("-----------\n Totes \n------------\n");
+                                            System.out.println("---------------------\n TOTES LES RESERVES \n---------------------\n");
                                             iNumeroReserva = 1;
                                             
                                             for(int i = 0;i<1000;i++){
@@ -454,7 +454,7 @@ public class RestaurantCopia2 {
                                         }
                                         
                                         case 3:{ //TANCAR SESSIÓ
-                                            System.out.println("\033[35m" + "Adeu fins la proxima!" + "\033[30m");
+                                            System.out.println("\033[35m" + "Adeu fins un altre!" + "\033[30m");
                                             bAdmin = false;
                                             break;
                                         }
@@ -590,6 +590,7 @@ public class RestaurantCopia2 {
         }
     }
     private static int iLlegirOpcioMenu(){
+        /**/
         Scanner sc = new Scanner(System.in);
         
         System.out.print("Introdueixi una opció:\n -> ");
