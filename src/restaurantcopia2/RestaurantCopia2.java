@@ -48,7 +48,7 @@ public class RestaurantCopia2 {
             + "Introdueix '13' per tornar al menú\n "};
         
         String[] MenuRegistrarUsuari = {"------------------\n REGISTRAR USUARI \n------------------\n "
-            + "Escriu 'adeu' per tornar al menu"};
+            + "Escriu 'adeu' per tornar al menu\n "};
         
         String[] MenuCancelarReserva = {"---------------\n CANCEL·LACIÓ RESERVA \n---------------\n"};
         
