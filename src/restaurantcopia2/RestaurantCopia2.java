@@ -53,8 +53,7 @@ public class RestaurantCopia2 {
         String[] MenuCancelarReserva = {"---------------\n CANCEL·LACIÓ RESERVA \n---------------\n"};
         
         String[] MenuBuscarReserva = {"-----------------\n BUSQUEDA RESERVA \n-----------------\n "
-            + "Introeudix '13' per tornar al menú\n "
-            + "Introdueixi el numero de telefon amb el que va fer la reserva:\n "};
+            + "Introeudix '13' per tornar al menú\n "};
         
         String[] MenuRecuperarContrasenya= {"-----------------------\n RECUPERAR CONTRASENYA \n-----------------------\n "
             + "Escriu 'adeu' per tornar al menu\n "};
@@ -95,7 +94,7 @@ public class RestaurantCopia2 {
         String fUsuari = "Nom usuari:\n -> "; //Text demanar nom d'usuari
         String fContrasenya = "Contrasenya:\n -> "; //Text demanar contrasenya
         String fNovaContrasenya = "Nova Contrasenya:\n -> "; //Text demanr nova contrasenya (Registrar-se/Recuperar)
-        String fRepContrasenya = "Repereix Contrasenya:\n -> "; //Text demanar repetir contrsenya (Registrar usuari)
+        String fRepContrasenya = "Repeteix Contrasenya:\n -> "; //Text demanar repetir contrsenya (Registrar usuari)
         String fNouUsuari = "Nou nom d'Usuari:\n -> "; //Text demanr nou nom d'usuari
         String fCorreu = "Introdueix el vostre correu\n -> "; //Text demanar correu (Registrar usuari)
         
