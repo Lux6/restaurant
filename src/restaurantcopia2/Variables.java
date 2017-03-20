@@ -25,6 +25,7 @@ public class Variables {
         int iComensalsR =0;//Variable comensals reserva
         
         String nTelefonReserva = "Introdueixi el numero de telefon amb el que va fer la reserva:\n -> "; //Text demanar Telefon reserva(Visualitzat/Modificar)
+        String nTelReserva = "Introduexi el numero de telefon:\n -> "; //Text demanar Telefon reserva (Sol·licitar)
 
         
 }
