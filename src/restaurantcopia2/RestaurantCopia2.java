@@ -43,7 +43,6 @@ public class RestaurantCopia2 {
         String nTelefonReserva = "Introdueixi el numero de telefon amb el que va fer la reserva:\n -> "; //Text demanar Telefon reserva(Visualitzat/Modificar)
         String nDiaReserva = "Introduexi ara el dia desitjat(1-29):\n -> "; //Text demanr dia reserva
         String nComensalsReserva = "Introduexi el numero de comensals(1-11):\n -> "; //Text demanr comensals reserva
-        String nTelReserva = "Introduexi el numero de telefon:\n -> "; //Text demanar Telefon reserva (Sol·licitar)
         String nMesReserva = "Numero del mes de la reserva:\n -> "; //Text demanar Mes reserva
         String sMeses[] = {"Gener","Febrer","Març","Abril","Maig","Juny","Juliol","Agost","Septembre","Octubre","Novembre","Desembre"};
         
@@ -104,7 +103,6 @@ public class RestaurantCopia2 {
                             break;
                         }
                         //Demanar i guardar contrasenya
-                        
                         sContrasenya = sLlegirText(fContrasenya);
                         
                         //L'usuari sempre serà incorrecte
@@ -162,7 +160,7 @@ public class RestaurantCopia2 {
                                                     sNomReserva = sLlegirText(fNomReserva);
                     
                                                     //Numero de telefon
-                                                    var.iTelefon = comprobacioTelefono(nTelReserva,bTelefon,reserva);
+                                                    var.iTelefon = comprobacioTelefono(var.nTelReserva,bTelefon,reserva);
                                                     
                                                 //Resum i guardar les dades
                                                 System.out.println("---------------\nRESUM DE LA RESERVA \n---------------\nNom: "+sNomReserva+"\n"
@@ -187,23 +185,8 @@ public class RestaurantCopia2 {
                                             }break;
                                         } //*************************************************************CANCELAR RESERVA*//
                                         case 2:{ 
-                                            
-                                            Menus(Menus.MenuCancelarReserva);
-                                            var.iTelefon = sLlegirNumero(nTelefonReserva);
-                    
-                                            for(int i = 0; i < var.c; i++){
-                                                if(var.iTelefon==reserva[i].iTelefon){
-                                                    reserva[i].iTelefon=0;
-                                                    System.out.println("\033[32m" + "Reserva cancel·lada correctament" + "\033[30m");
-                                                    reserva[var.c].iComensalsR = 25;
-                                                    reserva[var.c].iDiaReserva = 30;
-                                                    reserva[var.c].iMesReserva = -1;
-                                                    reserva[var.c].iTelefon = 0;
-                                                    break;
-                                                }else{
-                                                    System.out.println("\033[31m" + "Reserva no trobada" + "\033[30m");
-                                                }
-                                            }break;
+                                            CancelarReserva(reserva, sMeses, var, err, Menus);
+                                            break;
                                         }
                                         //*************************************************************BUSCAR RESERVA*//
                                         case 3:{
@@ -640,6 +623,9 @@ public class RestaurantCopia2 {
         }
         return bReserva;
     }
+    /**
+     * Mostra la reserva i retorna un boolea per comprobar si la cerca ha estat correcta o no
+     */
     private static boolean MostrarReserva(TReserva[] reserva,String[] sMeses,Variables var){
        boolean bTrue = true;
        
@@ -657,6 +643,9 @@ public class RestaurantCopia2 {
         }
         return bTrue;
     }
+    /**
+     * Case 3, Busca la reserva del client a traves del seu numero de telefon
+     */
     private static void BuscarReserva (TReserva[] reserva,String[] sMeses,Variables var,Errores err,Menus Menus){
         boolean bComprobacion = true;  
         
@@ -672,4 +661,28 @@ public class RestaurantCopia2 {
             MostraErr(err.sReservaNoTrobada);
         }
     }
+    private static void EsborrarReserva (TReserva[] reserva,Variables var){
+        for(int i = 0; i < var.c; i++){
+            if(var.iTelefon==reserva[i].iTelefon){
+                reserva[i].iTelefon=0;
+                System.out.println("\033[32m" + "Reserva cancel·lada correctament" + "\033[30m");
+                reserva[var.c].iComensalsR = 00;
+                reserva[var.c].iDiaReserva = 30;
+                reserva[var.c].iMesReserva = -1;
+                reserva[var.c].iTelefon = 0;
+                break;
+            }else{
+                System.out.println("\033[31m" + "Reserva no trobada" + "\033[30m");
+            }
+    }
+}
+    private static void CancelarReserva (TReserva[] reserva,String[] sMeses,Variables var,Errores err,Menus Menus){
+       //Mostra el menu de Cancelar Reserva
+        Menus(Menus.MenuCancelarReserva);
+        //Llegeix les dades per cancelar reserva
+        var.iTelefon = sLlegirNumero(var.nTelefonReserva);
+
+        EsborrarReserva(reserva, var);
+    }
+    
 }
