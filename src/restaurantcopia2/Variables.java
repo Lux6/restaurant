@@ -26,6 +26,14 @@ public class Variables {
         
         String nTelefonReserva = "Introdueixi el numero de telefon amb el que va fer la reserva:\n -> "; //Text demanar Telefon reserva(Visualitzat/Modificar)
         String nTelReserva = "Introduexi el numero de telefon:\n -> "; //Text demanar Telefon reserva (Sol·licitar)
+        String fNomReserva = "Introdueixi el nom al que vol fer la reserva:\n -> "; //Text demanar nom reserva
+        String sNomReserva;//Variable nom reserva
+        String nComensalsReserva = "Introduexi el numero de comensals(1-11):\n -> "; //Text demanr comensals reserva
+
+        
+                boolean bTelefon = false;//Telefon unic
+
+
 
         
 }
