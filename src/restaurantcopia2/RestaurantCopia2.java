@@ -11,7 +11,7 @@ import java.sql.*;
 public class RestaurantCopia2 {
     
     static final String JDBC_DRIVER = "org.postgresql.Driver";
-    static final String DB_URL = "jdbc:postgresql://localhost:restaurant";
+    static final String DB_URL = "jdbc:postgresql://192.168.153.1:restaurant";
     static final String USER = "postgres";
     static final String PASS = "root";
     
@@ -25,7 +25,6 @@ public class RestaurantCopia2 {
         boolean bAdmin = true;//Bucle Menú administrador
         boolean bReserva = true;//Cancel·lar Sol·licitud Reserva
         boolean bModificarRes;//Bucle Menú Modificar Reserva
-        boolean bTelefon = false;//Telefon unic
         
         String sUsuari;//Variable usuari
         String sContrasenya;//Variable contrasenya
@@ -33,9 +32,7 @@ public class RestaurantCopia2 {
         String sCorreu;//Variable correu
         String[][] sTUsuari = new String[99][4];//Base de dades usuari
         String sConfirmar;//Variables confiramar reserva
-        String sNomReserva;//Variable nom reserva
         
-        String fNomReserva = "Introdueixi el nom al que vol fer la reserva:\n -> "; //Text demanar nom reserva
         String fUsuari = "Nom usuari:\n -> "; //Text demanar nom d'usuari
         String fContrasenya = "Contrasenya:\n -> "; //Text demanar contrasenya
         String fNovaContrasenya = "Nova Contrasenya:\n -> "; //Text demanr nova contrasenya (Registrar-se/Recuperar)
@@ -46,7 +43,6 @@ public class RestaurantCopia2 {
         
         String nTelefonReserva = "Introdueixi el numero de telefon amb el que va fer la reserva:\n -> "; //Text demanar Telefon reserva(Visualitzat/Modificar)
         String nDiaReserva = "Introduexi ara el dia desitjat(1-29):\n -> "; //Text demanr dia reserva
-        String nComensalsReserva = "Introduexi el numero de comensals(1-11):\n -> "; //Text demanr comensals reserva
         String nMesReserva = "Numero del mes de la reserva:\n -> "; //Text demanar Mes reserva
         String sMeses[] = {"Gener","Febrer","Març","Abril","Maig","Juny","Juliol","Agost","Septembre","Octubre","Novembre","Desembre"};
         
@@ -114,17 +110,7 @@ public class RestaurantCopia2 {
                         
                         //L'usuari sempre serà incorrecte
                         bUsuariC = false;
-                        
-                        //Comprovació de si l'usauri es correcte.
-                        /*for(int i = 0;i<sTUsuari.length;i++){
-                            if(sUsuari.equals(sTUsuari[i][0])){
-                                if(sContrasenya.equals(sTUsuari[i][1])){
-                                    //Contrasenya i usuari concideixen l'usuari es correcte
-                                    bUsuariC = true;
-                                    var.iUsuari = i;
-                                }
-                            }
-                        }*/
+                       
                         try {
                             String sQuery = "SELECT * FROM usuaris;";
                             ConnectarDB(db);
@@ -156,38 +142,15 @@ public class RestaurantCopia2 {
                                     var.iOpcioSolicitud = iLlegirOpcioMenu();
                     
                                     switch(var.iOpcioSolicitud){
-                                        case 1:{ //SOLICITAR RESERVA
+                                        case 1:{ //SOLICITAR RESERVA*******************************************************************************/
                                             bReserva = true;
             
                                                 while(true){
                                                     
-                                                    Menus(Menus.MenuSolicitarReserva);
-
-                                                        bReserva = true;
-                                                        reserva[0].idReserva = var.c;
-                                                        
-                                                    //Mes de la reserva
-                                                    bReserva = comprobacionMes(var.iMesReserva, reserva, nMesReserva, sMeses);
-                                                    var.iMesReserva = reserva[var.c].iMesReserva;
-                                                    //Si ha introdueit un mes valid continua amb la reserva
-                                                    if(bReserva == false){break;}
-                                                    //Dia de la reserva
-                                                    var.iDiaReserva = comprobacionDia(var.iDiaReserva,nDiaReserva);
-
-                                                    //Numero de comensals
-                                                    while(bReserva == true){
-                                                        var.iComensalsR = sLlegirNumero(nComensalsReserva);
-                                                        bReserva = comprobacionComensals(var.iComensalsR);
-                                                    }
-                                                
-                                                    //Nom de la reserva
-                                                    sNomReserva = sLlegirText(fNomReserva);
-                    
-                                                    //Numero de telefon
-                                                    var.iTelefon = comprobacioTelefono(var.nTelReserva,bTelefon,reserva);
-                                                    
+                                                bReserva = IntroduccionComprobacionDatos(Menus, 0, reserva, nMesReserva, sMeses, 0, var, nDiaReserva, bReserva);
+                                                 
                                                 //Resum i guardar les dades
-                                                System.out.println("---------------\nRESUM DE LA RESERVA \n---------------\nNom: "+sNomReserva+"\n"
+                                                System.out.println("---------------\nRESUM DE LA RESERVA \n---------------\nNom: "+ var.sNomReserva +"\n"
                                                     + "Nº Comensals: "+var.iComensalsR+"\n"
                                                     + "Dia: "+var.iDiaReserva+"\n"
                                                     + "Mes: "+sMeses[var.iMesReserva-1]+"\n"
@@ -204,7 +167,7 @@ public class RestaurantCopia2 {
                                                     ConnectarDB(db);
                                                     String sQuery = ("INSERT INTO reserves (dia,mes,comensals,telefon,nom) "
                                                         + "VALUES ("+ var.iDiaReserva +','+ var.iMesReserva 
-                                                        +','+ var.iComensalsR +','+ var.iTelefon +','+ '\''+sNomReserva+ '\'' +")");
+                                                        +','+ var.iComensalsR +','+ var.iTelefon +','+ '\''+var.sNomReserva+ '\'' +")");
                                                     UpdateDB(sQuery, db);
                                                     System.out.println("\033[32mReserva enregistrada correctament\033[30m");
                                                     DesconnectarDB(db);
@@ -254,16 +217,16 @@ public class RestaurantCopia2 {
                                                             case 1:{ //MODIFICAR NOM
                                                                 System.out.println("Nom actual "+ reserva[i].sNomReserva);
                                                                 
-                                                                sNomReserva = sLlegirText(fNouUsuari);
+                                                                var.sNomReserva = sLlegirText(fNouUsuari);
                                                                 
-                                                                System.out.println("Nom modificat a " + sNomReserva);
-                                                                reserva[i].sNomReserva = sNomReserva;
+                                                                System.out.println("Nom modificat a " + var.sNomReserva);
+                                                                reserva[i].sNomReserva = var.sNomReserva;
                                                                 break;
                                                             }
                                                             case 2:{ //MODIFICAR COMENSALS
                                                                 while(true){
                                                                     System.out.println("Nº actual de comensals: "+reserva[i].iComensalsR);
-                                                                    var.iComensalsR = sLlegirNumero(nComensalsReserva);
+                                                                    var.iComensalsR = sLlegirNumero(var.nComensalsReserva);
                         
                                                                     if(var.iComensalsR <= 11 && var.iComensalsR > 0){
                                                                         System.out.println("Ha reservat taula per a "+var.iComensalsR);
@@ -786,5 +749,37 @@ public class RestaurantCopia2 {
         } catch (Exception e){
         }
     }
-   
+    private static boolean IntroduccionComprobacionDatos(Menus Menus,int iMesReserva,TReserva[] reserva,String nMesReserva,String[] sMeses,int iDiaReserva,Variables var, String nDiaReserva,boolean bReserva){
+        while(true){
+            //*Mostra el menu de solicitar reserva*//
+            Menus(Menus.MenuSolicitarReserva);
+
+            //Retorna la variable bReserva a true
+            bReserva = true;
+                reserva[0].idReserva = var.c;
+
+            //Mes de la reserva
+            bReserva = comprobacionMes(var.iMesReserva, reserva, nMesReserva, sMeses);
+            var.iMesReserva = reserva[var.c].iMesReserva;
+
+                //Si ha introdueit un mes valid continua amb la reserva
+            if(bReserva == false){break;}
+
+            //Dia de la reserva
+            var.iDiaReserva = comprobacionDia(var.iDiaReserva,nDiaReserva);
+
+            //Numero de comensals
+            while(bReserva == true){
+                var.iComensalsR = sLlegirNumero(var.nComensalsReserva);
+                bReserva = comprobacionComensals(var.iComensalsR);
+            }
+
+            //Nom de la reserva
+            var.sNomReserva = sLlegirText(var.fNomReserva);
+
+            //Numero de telefon
+            var.iTelefon = comprobacioTelefono(var.nTelReserva,var.bTelefon,reserva);
+        }                          
+        return bReserva;
+    } 
 }
