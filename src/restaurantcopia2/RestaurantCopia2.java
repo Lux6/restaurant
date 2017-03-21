@@ -10,9 +10,13 @@ import java.sql.*;
 
 public class RestaurantCopia2 {
     
+    static final String JDBC_DRIVER = "org.postgresql.Driver";
+    static final String DB_URL = "jdbc:postgresql://localhost:restaurant";
+    static final String USER = "postgres";
+    static final String PASS = "root";
+    
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        
       
         boolean bOP = true;//Bucle Menú Principal
         boolean bIniciar = true;//Bucle Iniciar Sessio
@@ -52,6 +56,8 @@ public class RestaurantCopia2 {
         Menus Menus = new Menus();
         Variables var = new Variables();
         Errores err = new Errores();
+        BaseDades db = new BaseDades();
+        Usuari usu = new Usuari();
         
         //Reserva espai array class
         for(int i=0; i<1000; i++)reserva[i] = new TReserva();
@@ -59,9 +65,10 @@ public class RestaurantCopia2 {
         for(int i  = 0; i<100; i++){
             reserva[i].iTelefon = 0;
         }
+        
         //********************************//Usuari creats inicialment
         //Usuari administrador
-        sTUsuari[0][0] = "Paco";//Nom
+    /*    sTUsuari[0][0] = "Paco";//Nom
         sTUsuari[0][1] = "edu32";//Contrasenya
         sTUsuari[0][2] = "paco@gmail.com";//Correu
         sTUsuari[0][3] = "admin";//Tipus d'usuari
@@ -70,8 +77,8 @@ public class RestaurantCopia2 {
         sTUsuari[1][0] = "Manuel";//Nom
         sTUsuari[1][1] = "edu32";//Contrasenya
         sTUsuari[1][2] = "manuel@gmail.com";//Correu
-        sTUsuari[1][3] = "usu";//Tipus d'usuari
-        //********************************
+        sTUsuari[1][3] = "usu";//Tipus d'usuari*/
+        //*********************************/
         
         
         while(bOP == true){
@@ -109,7 +116,7 @@ public class RestaurantCopia2 {
                         bUsuariC = false;
                         
                         //Comprovació de si l'usauri es correcte.
-                        for(int i = 0;i<sTUsuari.length;i++){
+                        /*for(int i = 0;i<sTUsuari.length;i++){
                             if(sUsuari.equals(sTUsuari[i][0])){
                                 if(sContrasenya.equals(sTUsuari[i][1])){
                                     //Contrasenya i usuari concideixen l'usuari es correcte
@@ -117,7 +124,24 @@ public class RestaurantCopia2 {
                                     var.iUsuari = i;
                                 }
                             }
+                        }*/
+                        try {
+                            String sQuery = "SELECT * FROM usuaris;";
+                            ConnectarDB(db);
+                            QueryDB(sQuery, db);
+
+                            while (db.rs.next()) {
+                                usu.usu = db.rs.getString("nom");
+                                usu.pass = db.rs.getString("contrasenya");
+                                usu.tipus = db.rs.getString("tipus");
+                                if(sUsuari.equals(usu.usu) && sContrasenya.equals(usu.pass)){
+                                    bUsuariC = true;
+                                    break;
+                                }
+                            }
+                        }  catch (Exception e) {
                         }
+                        DesconnectarDB(db);
                         
                         //Mostra missatge depenent si l'usuari s'ha connectat correctament o no
                         if(bUsuariC == false){
@@ -125,7 +149,7 @@ public class RestaurantCopia2 {
                         }else{
                             System.out.println("\033[47m" + "\033[32m" + "S'ha iniciat la sessió correctament" + "\033[30m");
                             //Comprova si l'usuari es un usuari client
-                            if(sTUsuari[var.iUsuari][3].equals("usu")){
+                            if(usu.tipus.equals("usu")){
                                 do{    
                                     //Menu principal
                                     Menus(Menus.MenuReserves);
@@ -173,11 +197,17 @@ public class RestaurantCopia2 {
                                                 sConfirmar = sc.next();
                          
                                                 if(sConfirmar.equals("s")){
-                                                    reserva[var.c].sNomReserva = sNomReserva;
+                                                    /*reserva[var.c].sNomReserva = sNomReserva;
                                                     reserva[var.c].iDiaReserva = var.iDiaReserva;
                                                     reserva[var.c].iComensalsR = var.iComensalsR;
-                                                    reserva[var.c].iTelefon = var.iTelefon;
+                                                    reserva[var.c].iTelefon = var.iTelefon;*/
+                                                    ConnectarDB(db);
+                                                    String sQuery = ("INSERT INTO reserves (dia,mes,comensals,telefon,nom) "
+                                                        + "VALUES ("+ var.iDiaReserva +','+ var.iMesReserva 
+                                                        +','+ var.iComensalsR +','+ var.iTelefon +','+ '\''+sNomReserva+ '\'' +")");
+                                                    UpdateDB(sQuery, db);
                                                     System.out.println("\033[32mReserva enregistrada correctament\033[30m");
+                                                    DesconnectarDB(db);
                                                     var.c++;
                                                 }else{
                                                     System.out.println("\033[33mReserva cancel·lada\033[30m");
@@ -298,7 +328,7 @@ public class RestaurantCopia2 {
                                     }
                                 }while(var.iOpcioSolicitud != 5);
                             //Comprova si es un usuari administrador    
-                            }else if(sTUsuari[var.iUsuari][3].equals("admin")){
+                            }else if(usu.tipus.equals("admin")){
                                 bAdmin = true;
                                 while(bAdmin == true){
                                     
@@ -490,8 +520,9 @@ public class RestaurantCopia2 {
         }
     }
     /**
-    *Mostra els menus enmagatzemats al class Menus.java
-    */
+     * Mostra els menus enmagatzemats al class Menus.java
+     * @param Menu 
+     */
     private static void Menus(String[] Menu){
         for(int i = 0;i<Menu.length;i++){
             System.out.print(Menu[i]);
@@ -500,9 +531,10 @@ public class RestaurantCopia2 {
     private static void MostraErr(String Error){
         System.out.print(Error);
     }
-    /***
-    *Llegeix entrades dels Menus en nombres Int
-    */
+    /**
+     * Llegeix entrades dels Menus en nombres Int
+     * @return 
+     */
     private static int iLlegirOpcioMenu(){
         /**/
         Scanner sc = new Scanner(System.in);
@@ -513,8 +545,10 @@ public class RestaurantCopia2 {
         return iOpcioMenu; 
     }
     /**
-    *Llegeix entrades dels Menus en cadenes de caracters Strings i mostra el parametre Text
-    */
+     * Llegeix entrades dels Menus en cadenes de caracters Strings i mostra el parametre Text
+     * @param Text
+     * @return 
+     */
     private static String sLlegirText(String Text){
         Scanner sc = new Scanner(System.in);
         
@@ -526,8 +560,10 @@ public class RestaurantCopia2 {
         return sLectura;
     }
     /**
-    *Llegeix entrades dels Menus en nombres Int i mostra el parametre Text
-    */
+     * Llegeix entrades dels Menus en nombres Int i mostra el parametre Text
+     * @param Text
+     * @return 
+     */
     private static int sLlegirNumero(String Text){
         Scanner sc = new Scanner(System.in);
         
@@ -539,14 +575,17 @@ public class RestaurantCopia2 {
         return iNumero;
     }
     /**
-    *Retorna missatge de opció invalida
-    */
+     * Retorna missatge de opció invalida
+     */
     private static void sOpcioInvalida(){
         System.out.println("\033[31m" + "Has escollit una opció invalida" + "\033[30m");
     }
     /**
-    *Comproba si el dia introduit esta entre els valors valids (1-29)
-    */
+     * Comproba si el dia introduit esta entre els valors valids (1-29)
+     * @param iDiaReserva
+     * @param nDiaReserva
+     * @return 
+     */
     private static int comprobacionDia(int iDiaReserva, String nDiaReserva){
         
         while(true){
@@ -562,8 +601,10 @@ public class RestaurantCopia2 {
    
     }
     /**
-    *Comproba si els comensals introduits estan entre els valors valids (1-10)
-    */
+     * Comproba si els comensals introduits estan entre els valors valids (1-10)
+     * @param iComensalsR
+     * @return 
+     */
     private static boolean comprobacionComensals(int iComensalsR){
             if(iComensalsR <= 11 && iComensalsR > 0){
                 System.out.println("Ha reservat taula per a "+ iComensalsR);
@@ -573,8 +614,12 @@ public class RestaurantCopia2 {
             }return true;
         }
     /**
-    **Comproba si el telefon introduit esta entre els valors valids (600.000.000 - 999.999.999)
-    */
+     * Comproba si el telefon introduit esta entre els valors valids (600.000.000 - 999.999.999)
+     * @param nTelReserva
+     * @param bTelefon
+     * @param reserva
+     * @return 
+     */
     private static int comprobacioTelefono(String nTelReserva,boolean bTelefon,TReserva[] reserva){
         int iTelefon = 0;
         while(true){
@@ -601,8 +646,13 @@ public class RestaurantCopia2 {
         return iTelefon;
     }
     /**
-    *Comproba si el mes introduit esta entre els valors valids (1-12)
-    */
+     * Comproba si el mes introduit esta entre els valors valids (1-12)
+     * @param iMesReserva
+     * @param reserva
+     * @param nMesReserva
+     * @param sMeses
+     * @return 
+     */
     private static boolean comprobacionMes(int iMesReserva,TReserva[] reserva,String nMesReserva,String[] sMeses){
         //Mes de la reserva
         int c = reserva[0].idReserva;
@@ -624,8 +674,12 @@ public class RestaurantCopia2 {
         return bReserva;
     }
     /**
-     * Mostra la reserva i retorna un boolea per comprobar si la cerca ha estat correcta o no
-     */
+    * Mostra la reserva i retorna un boolea per comprobar si la cerca ha estat correcta o no
+    * @param reserva
+    * @param sMeses
+    * @param var
+    * @return 
+    */
     private static boolean MostrarReserva(TReserva[] reserva,String[] sMeses,Variables var){
        boolean bTrue = true;
        
@@ -645,6 +699,11 @@ public class RestaurantCopia2 {
     }
     /**
      * Case 3, Busca la reserva del client a traves del seu numero de telefon
+     * @param reserva
+     * @param sMeses
+     * @param var
+     * @param err
+     * @param Menus 
      */
     private static void BuscarReserva (TReserva[] reserva,String[] sMeses,Variables var,Errores err,Menus Menus){
         boolean bComprobacion = true;  
@@ -684,5 +743,48 @@ public class RestaurantCopia2 {
 
         EsborrarReserva(reserva, var);
     }
-    
+    private static void ConnectarDB(BaseDades db){
+        db.con = null;
+        db.stmt = null;
+        try {
+            Class.forName("org.postgresql.Driver");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            db.con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/restaurant",
+                    "postgres", "root");
+            db.con.setAutoCommit(false);
+            System.out.println("Opened database successfully");
+
+            db.stmt = db.con.createStatement();  
+            
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        }
+    }
+    private static void QueryDB(String sQuery,BaseDades db){
+        try {
+            db.rs = db.stmt.executeQuery(sQuery);
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        }
+    }
+    private static void UpdateDB(String sQuery,BaseDades db){
+        try {
+            db.stmt.executeUpdate(sQuery);
+            db.con.setAutoCommit(true);
+        } catch (Exception e) {
+        }
+    }
+    private static void DesconnectarDB(BaseDades db){
+        try{
+            db.stmt.close();
+            db.con.close();
+        } catch (Exception e){
+        }
+    }
+   
 }
