@@ -11,7 +11,7 @@ import java.sql.*;
 public class RestaurantCopia2 {
     
     static final String JDBC_DRIVER = "org.postgresql.Driver";
-    static final String DB_URL = "jdbc:postgresql://192.168.153.1:restaurant";
+    static final String DB_URL = "jdbc:postgresql://localhost:restaurant";
     static final String USER = "postgres";
     static final String PASS = "root";
     
@@ -147,34 +147,35 @@ public class RestaurantCopia2 {
             
                                                 while(true){
                                                     
-                                                bReserva = IntroduccionComprobacionDatos(Menus, 0, reserva, nMesReserva, sMeses, 0, var, nDiaReserva, bReserva);
-                                                 
-                                                //Resum i guardar les dades
-                                                System.out.println("---------------\nRESUM DE LA RESERVA \n---------------\nNom: "+ var.sNomReserva +"\n"
-                                                    + "Nº Comensals: "+var.iComensalsR+"\n"
-                                                    + "Dia: "+var.iDiaReserva+"\n"
-                                                    + "Mes: "+sMeses[var.iMesReserva-1]+"\n"
-                                                    + "Telefon y numero de registre: "+var.iTelefon);
-                    
-                                                System.out.print("Confirmar (s/n): ");
-                                                sConfirmar = sc.next();
-                         
-                                                if(sConfirmar.equals("s")){
-                                                    /*reserva[var.c].sNomReserva = sNomReserva;
-                                                    reserva[var.c].iDiaReserva = var.iDiaReserva;
-                                                    reserva[var.c].iComensalsR = var.iComensalsR;
-                                                    reserva[var.c].iTelefon = var.iTelefon;*/
-                                                    ConnectarDB(db);
-                                                    String sQuery = ("INSERT INTO reserves (dia,mes,comensals,telefon,nom) "
-                                                        + "VALUES ("+ var.iDiaReserva +','+ var.iMesReserva 
-                                                        +','+ var.iComensalsR +','+ var.iTelefon +','+ '\''+var.sNomReserva+ '\'' +")");
-                                                    UpdateDB(sQuery, db);
-                                                    System.out.println("\033[32mReserva enregistrada correctament\033[30m");
-                                                    DesconnectarDB(db);
-                                                    var.c++;
-                                                }else{
-                                                    System.out.println("\033[33mReserva cancel·lada\033[30m");
-                                                }break;
+                                                    IntroduccionComprobacionDatos(Menus, reserva, nMesReserva, sMeses, var, nDiaReserva);
+
+                                                    //Resum i guardar les dades
+                                                    System.out.println("---------------\nRESUM DE LA RESERVA \n---------------\nNom: "+ var.sNomReserva +"\n"
+                                                        + "Nº Comensals: "+var.iComensalsR+"\n"
+                                                        + "Dia: "+var.iDiaReserva+"\n"
+                                                        + "Mes: "+sMeses[var.iMesReserva-1]+"\n"
+                                                        + "Telefon y numero de registre: "+var.iTelefon);
+
+                                                    System.out.print("Confirmar (s/n): ");
+                                                    sConfirmar = sc.next();
+
+                                                    if(sConfirmar.equals("s")){
+                                                        /*reserva[var.c].sNomReserva = sNomReserva;
+                                                        reserva[var.c].iDiaReserva = var.iDiaReserva;
+                                                        reserva[var.c].iComensalsR = var.iComensalsR;
+                                                        reserva[var.c].iTelefon = var.iTelefon;*/
+                                                        ConnectarDB(db);
+                                                        String sQuery = ("INSERT INTO reserves (dia,mes,comensals,telefon,nom) "
+                                                            + "VALUES ("+ var.iDiaReserva +','+ var.iMesReserva 
+                                                            +','+ var.iComensalsR +','+ var.iTelefon +','+ '\''+var.sNomReserva+ '\'' +")");
+                                                        UpdateDB(sQuery, db);
+                                                        System.out.println("\033[32mReserva enregistrada correctament\033[30m");
+                                                        DesconnectarDB(db);
+                                                        var.c++;
+                                                    }else{
+                                                        System.out.println("\033[33mReserva cancel·lada\033[30m");
+                                                    }
+                                                break;
                                             }break;
                                         } //*************************************************************CANCELAR RESERVA*//
                                         case 2:{ 
@@ -749,14 +750,16 @@ public class RestaurantCopia2 {
         } catch (Exception e){
         }
     }
-    private static boolean IntroduccionComprobacionDatos(Menus Menus,int iMesReserva,TReserva[] reserva,String nMesReserva,String[] sMeses,int iDiaReserva,Variables var, String nDiaReserva,boolean bReserva){
-        while(true){
+    private static void IntroduccionComprobacionDatos(Menus Menus,TReserva[] reserva,String nMesReserva,String[] sMeses,Variables var, String nDiaReserva){
+        boolean bReserva = true;
+        
+        while(bReserva == true){
             //*Mostra el menu de solicitar reserva*//
             Menus(Menus.MenuSolicitarReserva);
 
             //Retorna la variable bReserva a true
             bReserva = true;
-                reserva[0].idReserva = var.c;
+            reserva[0].idReserva = var.c;
 
             //Mes de la reserva
             bReserva = comprobacionMes(var.iMesReserva, reserva, nMesReserva, sMeses);
@@ -779,7 +782,6 @@ public class RestaurantCopia2 {
 
             //Numero de telefon
             var.iTelefon = comprobacioTelefono(var.nTelReserva,var.bTelefon,reserva);
-        }                          
-        return bReserva;
+        }
     } 
 }
