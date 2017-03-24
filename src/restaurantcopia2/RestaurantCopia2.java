@@ -9,7 +9,9 @@ import java.util.Scanner;
 import java.sql.*;
 
 public class RestaurantCopia2 {
-    
+    /**
+     *
+     */
     static final String JDBC_DRIVER = "org.postgresql.Driver";
     static final String DB_URL = "jdbc:postgresql://localhost:restaurant";
     static final String USER = "postgres";
@@ -17,27 +19,14 @@ public class RestaurantCopia2 {
     
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-      
-        boolean bOP = true;//Bucle Menú Principal
-        boolean bIniciar = true;//Bucle Iniciar Sessio
-        
-        
-        boolean bAdmin = true;//Bucle Menú administrador
-        boolean bReserva = true;//Cancel·lar Sol·licitud Reserva
-        boolean bModificarRes;//Bucle Menú Modificar Reserva
-        
-        
-        
+
+         
         String[][] sTUsuari = new String[99][4];//Base de dades usuari
-               
-        
-        
-        
+  
         String nTelefonReserva = "Introdueixi el numero de telefon amb el que va fer la reserva:\n -> "; //Text demanar Telefon reserva(Visualitzat/Modificar)
         
         String sMeses[] = {"Gener","Febrer","Març","Abril","Maig","Juny","Juliol","Agost","Septembre","Octubre","Novembre","Desembre"};
         
-
         //*Reservar espacio de clases*//   
         TReserva reserva[] = new TReserva[1000];
         Menus Menus = new Menus();
@@ -52,32 +41,34 @@ public class RestaurantCopia2 {
         for(int i  = 0; i<100; i++){
             reserva[i].iTelefon = 0;
         }
-        //********** Reserva espai array class **********//
+        //**********************************************//
         
-        while(bOP == true){
+        while(var.bOP == true){
             
+            //Mostra el menu principal i llegeix opció del menu
             Menus(Menus.MenuPrincipal);
             var.iOpcioPrincipal = iLlegirOpcioMenu();
             
-            //Comprovar si l'usuari vol tancar el programa.
+            //Comprova si l'usuari vol tancar el programa.
             if(var.iOpcioPrincipal == 4){
-                System.out.println("\033[34m"+"Adeu!");
+                Mostra(var.fComiat);
                 break;
             }
             
             switch(var.iOpcioPrincipal){
-                //*********************************************************************************INICI SESSIÓ*//
+                //************************************************************INICI SESSIÓ*****************************************************************//
                 case 1:{ //
                     
-                    while(bIniciar == true){
-                        System.out.println("----------------\n INICIAR SESSIÓ \n----------------");
+                    while(var.bIniciar == true){
+                        Mostra("----------------\n INICIAR SESSIÓ \n----------------");
                         
-                        System.out.println("Escriu 'adeu' per tornar al menu");
+                        Mostra("Escriu 'adeu' per tornar al menu");
                         //Demanar i guardar nom d'usuari
                         var.sUsuari = sLlegirText(var.fUsuari);
                         //Comprovar si l'usuari vol cancel·lar l'inici de sessio
+                        
                         if(var.sUsuari.equals("adeu")){
-                            System.out.println("\033[33m" + "Inici de sessió cancel·lat" + "\033[30m");
+                            Mostra("\033[33m" + "Inici de sessió cancel·lat" + "\033[30m");
                             break;
                         }
                         //Demanar i guardar contrasenya
@@ -88,9 +79,9 @@ public class RestaurantCopia2 {
                         
                         //Mostra missatge depenent si l'usuari s'ha connectat correctament o no
                         if(var.bUsuariC == false){
-                            System.out.println("\033[47m" + "\033[31m" + "Usuari o contrasenya incorrecte" + "\033[30m");
+                            Mostra("\033[47m" + "\033[31m" + "Usuari o contrasenya incorrecte" + "\033[30m");
                         }else{
-                            System.out.println("\033[47m" + "\033[32m" + "S'ha iniciat la sessió correctament" + "\033[30m");
+                            Mostra("\033[47m" + "\033[32m" + "S'ha iniciat la sessió correctament" + "\033[30m");
                             
                             //Comprova si l'usuari es un usuari client
                             if(usu.tipus.equals("usu")){
@@ -101,37 +92,38 @@ public class RestaurantCopia2 {
                                     var.iOpcioSolicitud = iLlegirOpcioMenu();
                     
                                     switch(var.iOpcioSolicitud){
-                                        case 1:{ //SOLICITAR RESERVA*******************************************************************************/
+                                        case 1:{ //*************************************SOLICITAR RESERVA*****************************************************/
                                             SolicitarReserva(var, db, Menus, sMeses, reserva);
                                             break;
                                         } 
-                                        case 2:{ //*************************************************************CANCELAR RESERVA*//
+                                        
+                                        case 2:{ //************************************CANCELAR RESERVA******************************************************//
                                             CancelarReserva(reserva, sMeses, var, err, Menus);
                                             break;
                                         }
                                         
-                                        case 3:{ //*************************************************************BUSCAR RESERVA*//
+                                        case 3:{ //*************************************BUSCAR RESERVA******************************************************//
                                             BuscarReserva(reserva, sMeses, var, err, Menus);
                                             break;
                                         }
                                         
-                                        case 4:{ //*************************************************************MODIFICAR RESERVA*//
+                                        case 4:{ //************************************MODIFICAR RESERVA****************************************************//
                                             
-                                            bModificarRes = true;
+                                            var.bModificarRes = true;
                                             
-                                            while(bModificarRes == true){
+                                            while(var.bModificarRes == true){
                                                 
                                                 Menus(Menus.MenuModificarReserva);   
                                                 var.iTelefon = sLlegirNumero(nTelefonReserva);
 
                                                 if(var.iTelefon == 13){
-                                                    System.out.println("\033[33m" + "Modificacio de resrva cancel·lada" + "\033[30m");
+                                                    Mostra("\033[33m" + "Modificacio de resrva cancel·lada" + "\033[30m");
                                                     break;
                                                 }
                                                 
                                                 for(int i = 0; i < var.c; i++){
                                                     if(var.iTelefon==reserva[i].iTelefon){
-                                                        System.out.println("---------------\nDADES DE LA RESERVA\n---------------\n"
+                                                        Mostra("---------------\nDADES DE LA RESERVA\n---------------\n"
                                                             + "Nom: "+reserva[i].sNomReserva+"\n"
                                                             + "Nº Comensals: "+reserva[i].iComensalsR+"\n"
                                                             + "Dia: "+reserva[i].iDiaReserva+"\n"
@@ -143,58 +135,58 @@ public class RestaurantCopia2 {
                             
                                                         switch(var.iOpcioModificar){
                                                             case 1:{ //MODIFICAR NOM
-                                                                System.out.println("Nom actual "+ reserva[i].sNomReserva);
+                                                                Mostra("Nom actual "+ reserva[i].sNomReserva);
                                                                 
                                                                 var.sNomReserva = sLlegirText(var.fNouUsuari);
                                                                 
-                                                                System.out.println("Nom modificat a " + var.sNomReserva);
+                                                                Mostra("Nom modificat a " + var.sNomReserva);
                                                                 reserva[i].sNomReserva = var.sNomReserva;
                                                                 break;
                                                             }
                                                             case 2:{ //MODIFICAR COMENSALS
                                                                 while(true){
-                                                                    System.out.println("Nº actual de comensals: "+reserva[i].iComensalsR);
+                                                                    Mostra("Nº actual de comensals: "+reserva[i].iComensalsR);
                                                                     var.iComensalsR = sLlegirNumero(var.nComensalsReserva);
                         
                                                                     if(var.iComensalsR <= 11 && var.iComensalsR > 0){
-                                                                        System.out.println("Ha reservat taula per a "+var.iComensalsR);
+                                                                        Mostra("Ha reservat taula per a "+var.iComensalsR);
                                                                         reserva[i].iComensalsR = var.iComensalsR;
                                                                         break;
                                                                     }else{ 
-                                                                        System.out.println("\033[31m" + "*Comensals erronis*" + "\033[30m");
+                                                                        Mostra("\033[31m" + "*Comensals erronis*" + "\033[30m");
                                                                     }
                                                                 }break;
                                                             }
                                                             case 3:{ //MODIFICAR DIA
                                                                 while(true){
-                                                                    System.out.println("Dia seleccionat actualment: "+reserva[i].iDiaReserva);
+                                                                    Mostra("Dia seleccionat actualment: "+reserva[i].iDiaReserva);
                                                                     var.iDiaReserva = sLlegirNumero(var.nDiaReserva);
                         
                                                                     if(var.iDiaReserva <= 29 && var.iDiaReserva > 0){
-                                                                        System.out.println("Ha escollit el dia "+ var.iDiaReserva);
+                                                                        Mostra("Ha escollit el dia "+ var.iDiaReserva);
                                                                         reserva[i].iDiaReserva = var.iDiaReserva;
                                                                         break;
                                                                     }else{ 
-                                                                        System.out.println("\033[31m" + "*Dia erroni*" + "\033[30m");
+                                                                        Mostra("\033[31m" + "*Dia erroni*" + "\033[30m");
                                                                     }
                                                                 }break;
                                                             }
                                                             case 4:{ //MODIFICAR MES
                                                                 while(true){
-                                                                    System.out.println("Mes seleccionat actualment: "+reserva[i].iMesReserva);
+                                                                    Mostra("Mes seleccionat actualment: "+reserva[i].iMesReserva);
                                                                     var.iMesReserva = sLlegirNumero(var.nDiaReserva);
                                                     
                                                                     if(var.iMesReserva <= 12 && var.iMesReserva >= 0){
-                                                                        System.out.println("Ha escollit "+sMeses[var.iMesReserva-1]);
+                                                                        Mostra("Ha escollit "+sMeses[var.iMesReserva-1]);
                                                                         reserva[i].iMesReserva = var.iMesReserva;
                                                                         break;
                                                                     }else{
-                                                                        System.out.println("\033[31m" + "*Mes erroni*" + "\033[30m");
+                                                                        Mostra("\033[31m" + "*Mes erroni*" + "\033[30m");
                                                                     }
                                                                 }break;
                                                             }
                                                             case 5:{ //TORNAR AL MENÚ
-                                                                bModificarRes = false;
+                                                                var.bModificarRes = false;
                                                                 break;
                                                             }
                                                             default :{ //OPCIÓ INVALIDA
@@ -209,7 +201,7 @@ public class RestaurantCopia2 {
                                             }break;
                                         }    
                                         case 5:{ //TANCA SESSIÓ
-                                            System.out.println("\033[35m" + "Adeu fins la proxima!" + "\033[30m");
+                                            Mostra(var.fComiat);
                                             break;
                                         }
                                         
@@ -220,13 +212,13 @@ public class RestaurantCopia2 {
                                 }while(var.iOpcioSolicitud != 5);
                             //Comprova si es un usuari administrador    
                             }else if(usu.tipus.equals("admin")){
-                                bAdmin = true;
-                                while(bAdmin == true){
+                                var.bAdmin = true;
+                                while(var.bAdmin == true){
                                     
                                     Menus(Menus.MenuGestioReserves);
                                     var.iGestio = iLlegirOpcioMenu();
                                     
-                                    //*************************************************************RESERVAS PER MES*//
+                                    //*****************************************************RESERVAS PER MES************************************************//
                                     switch (var.iGestio){
                                         case 1:{ //RESERVA PER MES
                                             while(true){  
@@ -238,14 +230,14 @@ public class RestaurantCopia2 {
                                                     System.out.println("\033[33m" + "Busqueda reserva per mes cancel·lada" + "\033[30m");
                                                     break;
                                                 }else if(var.iMes > 0 && var.iMes < 13){
-                                                    System.out.println("-----------\n "+ sMeses[var.iMes-1]+ " \n------------\n");
+                                                    Mostra("-----------\n "+ sMeses[var.iMes-1]+ " \n------------\n");
                                                     
                                                     var.iNumeroReserva = 1;
                                                     
                                                     //Busca les reserves del mes
                                                     for(int i = 0;i<1000;i++){
                                                         if(reserva[i].iMesReserva == (var.iMes) && reserva[i].iTelefon > 0){
-                                                            System.out.println(" > RESERVA Nº"+ var.iNumeroReserva +" \n---------------\n"
+                                                            Mostra(" > RESERVA Nº"+ var.iNumeroReserva +" \n---------------\n"
                                                                 + "Nom: "+reserva[i].sNomReserva +"\n"
                                                                 + "Nº Comensals: "+reserva[i].iComensalsR +"\n"
                                                                 + "Dia: "+reserva[i].iDiaReserva +"\n"
@@ -259,15 +251,15 @@ public class RestaurantCopia2 {
                                                 }
                                             }break;
                                         }
-                                        //*************************************************************TOTES LES RESERVA*//
+                                        //*****************************************************TOTES LES RESERVA*******************************************//
                                         case 2:{ 
                                             //Mostra totes les reserves
-                                            System.out.println("---------------------\n TOTES LES RESERVES \n---------------------\n");
+                                            Mostra("---------------------\n TOTES LES RESERVES \n---------------------\n");
                                             var.iNumeroReserva = 1;
                                             
                                             for(int i = 0;i<1000;i++){
                                                 if(reserva[i].iTelefon > 0){
-                                                    System.out.println(" > RESERVA Nº"+ var.iNumeroReserva +" \n---------------\n"
+                                                    Mostra(" > RESERVA Nº"+ var.iNumeroReserva +" \n---------------\n"
                                                         + "Nom: "+reserva[i].sNomReserva+"\n"
                                                         + "Nº Comensals: "+reserva[i].iComensalsR+"\n"
                                                         + "Dia: "+reserva[i].iDiaReserva+"\n"
@@ -279,8 +271,8 @@ public class RestaurantCopia2 {
                                         }
                                         
                                         case 3:{ //TANCAR SESSIÓ
-                                            System.out.println("\033[35m" + "Adeu fins un altre!" + "\033[30m");
-                                            bAdmin = false;
+                                            Mostra("\033[35m" + "Adeu fins un altre!" + "\033[30m");
+                                            var.bAdmin = false;
                                             break;
                                         }
                                         
@@ -293,7 +285,7 @@ public class RestaurantCopia2 {
                         }
                     }break;
                 }
-                //*************************************************************REGISTRE USUARI*//
+                //*************************************************************REGISTRE USUARI**********************************************************//
                 case 2:{ //REGISTAR USUARI
                      var.bRegistre = true;                  
                     
@@ -330,10 +322,9 @@ public class RestaurantCopia2 {
                     
                     }break;
                 }
-                //*************************************************************RECUPERAR CONTRASENYA*//
+                //*************************************************************RECUPERAR CONTRASENYA*************************************************//
                 case 3:{
                     RecuperarContrasenya(var, Menus, sTUsuari);
-                    
                     break;
                 }
                 //Opcio del menú incorrecte
@@ -353,8 +344,8 @@ public class RestaurantCopia2 {
         }
     }
     
-    private static void MostraErr(String Error){
-        System.out.println(Error);
+    private static void Mostra(String s){
+        System.out.println(s);
     }
     
     /**
@@ -549,7 +540,7 @@ public class RestaurantCopia2 {
         MostrarReserva(reserva, sMeses, var);
         //Comprueba si la reserva se ha mostrado, sino muestra mensaje de no encontrada
         if(var.bBuscar == true){
-            MostraErr(err.sReservaNoTrobada);
+            Mostra(err.sReservaNoTrobada);
         }
     }
     
