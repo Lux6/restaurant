@@ -20,30 +20,21 @@ public class RestaurantCopia2 {
       
         boolean bOP = true;//Bucle Menú Principal
         boolean bIniciar = true;//Bucle Iniciar Sessio
-        boolean bRegistre = true;//Bucle Registrar usuari
-        boolean bRecuperacio;//Bucle Recuperacio Contrasenya
+        
+        
         boolean bAdmin = true;//Bucle Menú administrador
         boolean bReserva = true;//Cancel·lar Sol·licitud Reserva
         boolean bModificarRes;//Bucle Menú Modificar Reserva
         
-        String sUsuari;//Variable usuari
-        String sContrasenya;//Variable contrasenya
-        String sContrasenyaRep;//Variable contrasenya repetida
-        String sCorreu;//Variable correu
-        String[][] sTUsuari = new String[99][4];//Base de dades usuari
-        String sConfirmar;//Variables confiramar reserva
         
-        String fUsuari = "Nom usuari:\n -> "; //Text demanar nom d'usuari
-        String fContrasenya = "Contrasenya:\n -> "; //Text demanar contrasenya
-        String fNovaContrasenya = "Nova Contrasenya:\n -> "; //Text demanr nova contrasenya (Registrar-se/Recuperar)
-        String fRepContrasenya = "Repeteix Contrasenya:\n -> "; //Text demanar repetir contrsenya (Registrar usuari)
-        String fNouUsuari = "Nou nom d'Usuari:\n -> "; //Text demanr nou nom d'usuari
-        String fCorreu = "Introdueix el vostre correu\n -> "; //Text demanar correu (Registrar usuari)
+        
+        String[][] sTUsuari = new String[99][4];//Base de dades usuari
+               
+        
         
         
         String nTelefonReserva = "Introdueixi el numero de telefon amb el que va fer la reserva:\n -> "; //Text demanar Telefon reserva(Visualitzat/Modificar)
-        String nDiaReserva = "Introduexi ara el dia desitjat(1-29):\n -> "; //Text demanr dia reserva
-        String nMesReserva = "Numero del mes de la reserva:\n -> "; //Text demanar Mes reserva
+        
         String sMeses[] = {"Gener","Febrer","Març","Abril","Maig","Juny","Juliol","Agost","Septembre","Octubre","Novembre","Desembre"};
         
 
@@ -55,27 +46,13 @@ public class RestaurantCopia2 {
         BaseDades db = new BaseDades();
         Usuari usu = new Usuari();
         
-        //Reserva espai array class
+        //********** Reserva espai array class **********//
         for(int i=0; i<1000; i++)reserva[i] = new TReserva();
         
         for(int i  = 0; i<100; i++){
             reserva[i].iTelefon = 0;
         }
-        
-        //********************************//Usuari creats inicialment
-        //Usuari administrador
-    /*    sTUsuari[0][0] = "Paco";//Nom
-        sTUsuari[0][1] = "edu32";//Contrasenya
-        sTUsuari[0][2] = "paco@gmail.com";//Correu
-        sTUsuari[0][3] = "admin";//Tipus d'usuari
-        
-        //Usuari comú
-        sTUsuari[1][0] = "Manuel";//Nom
-        sTUsuari[1][1] = "edu32";//Contrasenya
-        sTUsuari[1][2] = "manuel@gmail.com";//Correu
-        sTUsuari[1][3] = "usu";//Tipus d'usuari*/
-        //*********************************/
-        
+        //********** Reserva espai array class **********//
         
         while(bOP == true){
             
@@ -91,104 +68,54 @@ public class RestaurantCopia2 {
             switch(var.iOpcioPrincipal){
                 //*********************************************************************************INICI SESSIÓ*//
                 case 1:{ //
-                                        
-                    boolean bUsuariC;//Comprovar si l'usuari es correcte
                     
                     while(bIniciar == true){
                         System.out.println("----------------\n INICIAR SESSIÓ \n----------------");
                         
                         System.out.println("Escriu 'adeu' per tornar al menu");
                         //Demanar i guardar nom d'usuari
-                        sUsuari = sLlegirText(fUsuari);
+                        var.sUsuari = sLlegirText(var.fUsuari);
                         //Comprovar si l'usuari vol cancel·lar l'inici de sessio
-                        if(sUsuari.equals("adeu")){
+                        if(var.sUsuari.equals("adeu")){
                             System.out.println("\033[33m" + "Inici de sessió cancel·lat" + "\033[30m");
                             break;
                         }
                         //Demanar i guardar contrasenya
-                        sContrasenya = sLlegirText(fContrasenya);
+                        var.sContrasenya = sLlegirText(var.fContrasenya);
                         
-                        //L'usuari sempre serà incorrecte
-                        bUsuariC = false;
-                       
-                        try {
-                            String sQuery = "SELECT * FROM usuaris;";
-                            ConnectarDB(db);
-                            QueryDB(sQuery, db);
-
-                            while (db.rs.next()) {
-                                usu.usu = db.rs.getString("nom");
-                                usu.pass = db.rs.getString("contrasenya");
-                                usu.tipus = db.rs.getString("tipus");
-                                if(sUsuari.equals(usu.usu) && sContrasenya.equals(usu.pass)){
-                                    bUsuariC = true;
-                                    break;
-                                }
-                            }
-                        }  catch (Exception e) {
-                        }
-                        DesconnectarDB(db);
+                        //Comprovar usuari
+                        ComprovarUsuari(var, db, usu);
                         
                         //Mostra missatge depenent si l'usuari s'ha connectat correctament o no
-                        if(bUsuariC == false){
+                        if(var.bUsuariC == false){
                             System.out.println("\033[47m" + "\033[31m" + "Usuari o contrasenya incorrecte" + "\033[30m");
                         }else{
                             System.out.println("\033[47m" + "\033[32m" + "S'ha iniciat la sessió correctament" + "\033[30m");
+                            
                             //Comprova si l'usuari es un usuari client
                             if(usu.tipus.equals("usu")){
                                 do{    
+                                    
                                     //Menu principal
                                     Menus(Menus.MenuReserves);
                                     var.iOpcioSolicitud = iLlegirOpcioMenu();
                     
                                     switch(var.iOpcioSolicitud){
                                         case 1:{ //SOLICITAR RESERVA*******************************************************************************/
-                                            bReserva = true;
-            
-                                                while(true){
-                                                    
-                                                    IntroduccionComprobacionDatos(Menus, reserva, nMesReserva, sMeses, var, nDiaReserva);
-
-                                                    //Resum i guardar les dades
-                                                    System.out.println("---------------\nRESUM DE LA RESERVA \n---------------\nNom: "+ var.sNomReserva +"\n"
-                                                        + "Nº Comensals: "+var.iComensalsR+"\n"
-                                                        + "Dia: "+var.iDiaReserva+"\n"
-                                                        + "Mes: "+sMeses[var.iMesReserva-1]+"\n"
-                                                        + "Telefon y numero de registre: "+var.iTelefon);
-
-                                                    System.out.print("Confirmar (s/n): ");
-                                                    sConfirmar = sc.next();
-
-                                                    if(sConfirmar.equals("s")){
-                                                        /*reserva[var.c].sNomReserva = sNomReserva;
-                                                        reserva[var.c].iDiaReserva = var.iDiaReserva;
-                                                        reserva[var.c].iComensalsR = var.iComensalsR;
-                                                        reserva[var.c].iTelefon = var.iTelefon;*/
-                                                        ConnectarDB(db);
-                                                        String sQuery = ("INSERT INTO reserves (dia,mes,comensals,telefon,nom) "
-                                                            + "VALUES ("+ var.iDiaReserva +','+ var.iMesReserva 
-                                                            +','+ var.iComensalsR +','+ var.iTelefon +','+ '\''+var.sNomReserva+ '\'' +")");
-                                                        UpdateDB(sQuery, db);
-                                                        System.out.println("\033[32mReserva enregistrada correctament\033[30m");
-                                                        DesconnectarDB(db);
-                                                        var.c++;
-                                                    }else{
-                                                        System.out.println("\033[33mReserva cancel·lada\033[30m");
-                                                    }
-                                                break;
-                                            }break;
-                                        } //*************************************************************CANCELAR RESERVA*//
-                                        case 2:{ 
+                                            SolicitarReserva(var, db, Menus, sMeses, reserva);
+                                            break;
+                                        } 
+                                        case 2:{ //*************************************************************CANCELAR RESERVA*//
                                             CancelarReserva(reserva, sMeses, var, err, Menus);
                                             break;
                                         }
-                                        //*************************************************************BUSCAR RESERVA*//
-                                        case 3:{
+                                        
+                                        case 3:{ //*************************************************************BUSCAR RESERVA*//
                                             BuscarReserva(reserva, sMeses, var, err, Menus);
                                             break;
                                         }
-                                        //*************************************************************MODIFICAR RESERVA*//
-                                        case 4:{ 
+                                        
+                                        case 4:{ //*************************************************************MODIFICAR RESERVA*//
                                             
                                             bModificarRes = true;
                                             
@@ -218,7 +145,7 @@ public class RestaurantCopia2 {
                                                             case 1:{ //MODIFICAR NOM
                                                                 System.out.println("Nom actual "+ reserva[i].sNomReserva);
                                                                 
-                                                                var.sNomReserva = sLlegirText(fNouUsuari);
+                                                                var.sNomReserva = sLlegirText(var.fNouUsuari);
                                                                 
                                                                 System.out.println("Nom modificat a " + var.sNomReserva);
                                                                 reserva[i].sNomReserva = var.sNomReserva;
@@ -241,7 +168,7 @@ public class RestaurantCopia2 {
                                                             case 3:{ //MODIFICAR DIA
                                                                 while(true){
                                                                     System.out.println("Dia seleccionat actualment: "+reserva[i].iDiaReserva);
-                                                                    var.iDiaReserva = sLlegirNumero(nDiaReserva);
+                                                                    var.iDiaReserva = sLlegirNumero(var.nDiaReserva);
                         
                                                                     if(var.iDiaReserva <= 29 && var.iDiaReserva > 0){
                                                                         System.out.println("Ha escollit el dia "+ var.iDiaReserva);
@@ -255,7 +182,7 @@ public class RestaurantCopia2 {
                                                             case 4:{ //MODIFICAR MES
                                                                 while(true){
                                                                     System.out.println("Mes seleccionat actualment: "+reserva[i].iMesReserva);
-                                                                    var.iMesReserva = sLlegirNumero(nDiaReserva);
+                                                                    var.iMesReserva = sLlegirNumero(var.nDiaReserva);
                                                     
                                                                     if(var.iMesReserva <= 12 && var.iMesReserva >= 0){
                                                                         System.out.println("Ha escollit "+sMeses[var.iMesReserva-1]);
@@ -305,7 +232,7 @@ public class RestaurantCopia2 {
                                             while(true){  
                                                 //Mostra la reserva per mes
                                                 Menus(Menus.MenuReservaPerMes);
-                                                var.iMes = sLlegirNumero(nMesReserva);
+                                                var.iMes = sLlegirNumero(var.nMesReserva);
                                                 
                                                 if(var.iMes == 13){//Comprova si l'usuari vol cancel·lar la cerca
                                                     System.out.println("\033[33m" + "Busqueda reserva per mes cancel·lada" + "\033[30m");
@@ -368,113 +295,46 @@ public class RestaurantCopia2 {
                 }
                 //*************************************************************REGISTRE USUARI*//
                 case 2:{ //REGISTAR USUARI
-                                        
-                    boolean bRegistreC;//Comprovar si el registre s'ha fet correctament
+                     var.bRegistre = true;                  
+                    
                     int iNRegistres = 0;//Posicio el primer espai buit a la base de dades de l'usuari
                     
-                    while(bRegistre == true){
+                    while(var.bRegistre == true){
                         Menus(Menus.MenuRegistrarUsuari);
                         
-                        bRegistreC = true;//Registre sempre es correcte
+                        var.bRegistreC = true;//Registre sempre es correcte
                         
-                        sUsuari = sLlegirText(fUsuari);
+                        var.sUsuari = sLlegirText(var.fUsuari);
                         
                         //Comprova si l'usuari vol cancel·lar el registre
-                        if(sUsuari.equals("adeu")){
+                        if(var.sUsuari.equals("adeu")){
                             System.out.println("\033[33m" + "Registre nou cancel·lat" + "\033[30m");
                             break;
                         }
                         
-                        sContrasenya = sLlegirText(fContrasenya);
-                        sContrasenyaRep = sLlegirText(fRepContrasenya);
-                        sCorreu = sLlegirText(fCorreu);
+                        var.sContrasenya = sLlegirText(var.fContrasenya);
+                        var.sContrasenyaRep = sLlegirText(var.fRepContrasenya);
+                        var.sCorreu = sLlegirText(var.fCorreu);
                         
                         //Comprova si l'usuari ja existeix
-                        for(int i = 0;i<sTUsuari.length;i++){
-                            if(sUsuari.equals(sTUsuari[i][0])){
-                                System.out.println("\033[31m" + "Aquest usuari ja existeix" + "\033[30m");
-                                bRegistreC = false;//Registre incorrecte
-                            }
-                            
-                        }
+                        RG_ComprovaUsuari(var, sTUsuari);
+                        
                         //Comprova si el correu ja s'esta utlitzant
-                        for(int i = 0;i<sTUsuari.length;i++){
-                            if(sCorreu.equals(sTUsuari[i][2])){
-                                System.out.println("\033[31m" + "Aquest correu ja s'esta utilitzant" + "\033[30m");
-                                bRegistreC = false;//Registre incorrecte
-                            }
-                        }
+                        RG_ComprovaCorreu(var, sTUsuari);
+                        
                         //Comprova si les contrasenyes coincideixen
-                        if(sContrasenya.equals(sContrasenyaRep)){
-                            
-                        }else{
-                            System.out.println("\033[31m" + "Les contrasenyes no coincideixen" + "\033[30m");
-                            bRegistreC = false;//Registre incorrecte
-                        }
+                        RG_ComprovaContrasenya(var);
+                        
                         //Comprova que l'usuari es correcte
-                        if(bRegistreC == true){
-                            //Guarda les dades de l'usuari
-                            while(true){
-                                if(sTUsuari[iNRegistres][0] == null){//Busca una posicio buida
-                                    sTUsuari[iNRegistres][0] = sUsuari;
-                                    sTUsuari[iNRegistres][1] = sContrasenya;
-                                    sTUsuari[iNRegistres][2] = sCorreu;
-                                    sTUsuari[iNRegistres][3] = "usu";
-                                    System.out.println("\033[32m" + "S'ha creat l'usuari correctament" + "\033[30m");
-                                    break;
-                                }
-                                iNRegistres++;
-                            }
-                            bRegistre = false;//Tancamnet del menú de registres
-                        }
+                        RG_GuardaUsuari(sTUsuari, var, db);
+                    
                     }break;
                 }
                 //*************************************************************RECUPERAR CONTRASENYA*//
                 case 3:{
+                    RecuperarContrasenya(var, Menus, sTUsuari);
                     
-                    bRecuperacio = true;
-                    
-                    while(bRecuperacio == true){
-                        Menus(Menus.MenuRecuperarContrasenya);
-                        
-                        //Comprovar si usuari i correu son corretes
-                        boolean bComprovacio = false;//Sempre es fals
-                    
-                        sUsuari = sLlegirText(fUsuari);
-                        
-                        //Comprova si l'usuari vol cancel·lar la recuperacio de contrasenya
-                        if(sUsuari.equals("adeu")){
-                            System.out.println("\033[33m" + "Recuperacio de contrasenya cancel·lada" + "\033[30m");
-                            break;
-                        }
-                        
-                        sCorreu = sLlegirText(fCorreu);
-                    
-                        //Comprovar si el correu i l'usuari son correctes
-                        for(int i = 0;i<sTUsuari.length;i++){
-                            if(sUsuari.equals(sTUsuari[i][0])){
-                                if(sCorreu.equals(sTUsuari[i][2])){
-                                    bComprovacio = true;//Usuari i correu coincideixen
-                                    
-                                    sContrasenya = sLlegirText(fNovaContrasenya);
-                                    sContrasenyaRep = sLlegirText(fRepContrasenya);
-                                    
-                                    //Comprova les contrasenyes coincideixen
-                                    if(sContrasenya.equals(sContrasenyaRep)){
-                                        sTUsuari[i][1] = sContrasenya;
-                                        System.out.println("\033[32m" + "Contrasenya nova aplicada correctament" + "\033[30m");
-                                        bRecuperacio = false;
-                                    }else{
-                                         System.out.println("\033[31m" + "Les contrasenyes no coincideixen" + "\033[30m");
-                                    }
-                                }
-                            }
-                        }
-                        //Si l'usuari i correu no conicideixen
-                        if(bComprovacio == false){
-                            System.out.println("\033[31m" + "Usuari o correu incorrecte" + "\033[30m");
-                        }
-                    }break;
+                    break;
                 }
                 //Opcio del menú incorrecte
                 default:{
@@ -492,9 +352,11 @@ public class RestaurantCopia2 {
             System.out.print(Menu[i]);
         }
     }
+    
     private static void MostraErr(String Error){
-        System.out.print(Error);
+        System.out.println(Error);
     }
+    
     /**
      * Llegeix entrades dels Menus en nombres Int
      * @return 
@@ -508,6 +370,7 @@ public class RestaurantCopia2 {
         
         return iOpcioMenu; 
     }
+    
     /**
      * Llegeix entrades dels Menus en cadenes de caracters Strings i mostra el parametre Text
      * @param Text
@@ -523,6 +386,7 @@ public class RestaurantCopia2 {
         
         return sLectura;
     }
+    
     /**
      * Llegeix entrades dels Menus en nombres Int i mostra el parametre Text
      * @param Text
@@ -538,45 +402,49 @@ public class RestaurantCopia2 {
       
         return iNumero;
     }
+    
     /**
      * Retorna missatge de opció invalida
      */
     private static void sOpcioInvalida(){
         System.out.println("\033[31m" + "Has escollit una opció invalida" + "\033[30m");
     }
+    
     /**
      * Comproba si el dia introduit esta entre els valors valids (1-29)
      * @param iDiaReserva
      * @param nDiaReserva
      * @return 
      */
-    private static int comprobacionDia(int iDiaReserva, String nDiaReserva){
+    private static void ComprovarDia(Variables var){
         
         while(true){
-            iDiaReserva = sLlegirNumero(nDiaReserva);
-                if(iDiaReserva <= 29 && iDiaReserva > 0){
-                    System.out.println("Ha escollit el dia "+iDiaReserva);
+            var.iDiaReserva = sLlegirNumero(var.nDiaReserva);
+                if(var.iDiaReserva <= 29 && var.iDiaReserva > 0){
+                    System.out.println("Ha escollit el dia "+var.iDiaReserva);
                     break;
                 }else{
                     System.out.println("\033[31m" + "*Dia erroni*" + "\033[30m");
                 }
         }
-        return iDiaReserva;
    
     }
+    
     /**
      * Comproba si els comensals introduits estan entre els valors valids (1-10)
      * @param iComensalsR
      * @return 
      */
-    private static boolean comprobacionComensals(int iComensalsR){
-            if(iComensalsR <= 11 && iComensalsR > 0){
-                System.out.println("Ha reservat taula per a "+ iComensalsR);
-                return false;
+    private static void ComprovarComensals(Variables var){
+            if(var.iComensalsR <= 11 && var.iComensalsR > 0){
+                System.out.println("Ha reservat taula per a "+ var.iComensalsR);
+                var.bReserva = false;
             }else{ 
                 System.out.println("\033[31m" + "*Comensals erronis*" + "\033[30m");
-            }return true;
+                var.bReserva = true;
+            }
         }
+    
     /**
      * Comproba si el telefon introduit esta entre els valors valids (600.000.000 - 999.999.999)
      * @param nTelReserva
@@ -584,31 +452,29 @@ public class RestaurantCopia2 {
      * @param reserva
      * @return 
      */
-    private static int comprobacioTelefono(String nTelReserva,boolean bTelefon,TReserva[] reserva){
-        int iTelefon = 0;
+    private static void ComprovarTelefon(Variables var,TReserva[] reserva){
         while(true){
-            bTelefon = true;
-            iTelefon = sLlegirNumero(nTelReserva);
+            var.bTelefon = true;
+            var.iTelefon = sLlegirNumero(var.nTelReserva);
 
             //Comprova que el telefon estigui dintre del rang valid
-            if(iTelefon < 1000000000 && iTelefon > 600000000){
+            if(var.iTelefon < 1000000000 && var.iTelefon > 600000000){
                 for(int i = 0;i < 1000;i++){
-                    if(iTelefon == reserva[i].iTelefon){
-                        bTelefon = false;
+                    if(var.iTelefon == reserva[i].iTelefon){
+                        var.bTelefon = false;
                     }
                 }
-                if(bTelefon == true){
-                    System.out.println("El telefon de contacte i el numero amb el qual podra modificar la reserva és "+ iTelefon);
-                        break;
-                    }else{
-                        System.out.println("\033[31m" + "*Numero ocupat*" + "\033[01m");
-                    }
-                    }else{
-                        System.out.println("\033[31m" + "*Format de telefon erroni*" + "\033[30m");
-                    }
+                if(var.bTelefon == true){
+                    System.out.println("El telefon de contacte i el numero amb el qual podra modificar la reserva és "+ var.iTelefon);
+                    break;
+                }else{
+                }        System.out.println("\033[31m" + "*Numero ocupat*" + "\033[01m");
+            }else{
+                System.out.println("\033[31m" + "*Format de telefon erroni*" + "\033[30m");
+            }
         }
-        return iTelefon;
     }
+    
     /**
      * Comproba si el mes introduit esta entre els valors valids (1-12)
      * @param iMesReserva
@@ -617,26 +483,29 @@ public class RestaurantCopia2 {
      * @param sMeses
      * @return 
      */
-    private static boolean comprobacionMes(int iMesReserva,TReserva[] reserva,String nMesReserva,String[] sMeses){
+    private static void ComprovarMes(Variables var,TReserva[] reserva,String[] sMeses){
         //Mes de la reserva
-        int c = reserva[0].idReserva;
-        boolean bReserva = true;
+        var.bReserva = true;
+        
         while(true){
-                iMesReserva = sLlegirNumero(nMesReserva);
-                    if(iMesReserva == 13){//Comprova si es 13 per cancel·lar
-                        System.out.println("\033[33m" + "Sol·licitud de reserva cancel·lada" + "\033[30m");
-                        bReserva = false;
-                        }else if(iMesReserva <= 12 && iMesReserva >= 0){
-                            System.out.println("Ha escollit "+sMeses[iMesReserva-1]);
-                            reserva[c].iMesReserva = iMesReserva;
-                            break;
-                        }else{//Mes introduit erroni
-                            sOpcioInvalida();
-                        }
-            if(bReserva == false){break;}  
+            var.iMesReserva = sLlegirNumero(var.nMesReserva);
+            
+            if(var.iMesReserva == 13){//Comprova si es 13 per cancel·lar
+                System.out.println("\033[33m" + "Sol·licitud de reserva cancel·lada" + "\033[30m");
+                var.bReserva = false;
+            }else if(var.iMesReserva <= 12 && var.iMesReserva >= 0){
+                System.out.println("Ha escollit "+sMeses[var.iMesReserva-1]);
+                reserva[var.c].iMesReserva = var.iMesReserva;
+                break;
+            }else{//Mes introduit erroni
+                sOpcioInvalida();
+            }
+            
+            if(var.bReserva == false)
+                {break;}  
         }
-        return bReserva;
     }
+    
     /**
     * Mostra la reserva i retorna un boolea per comprobar si la cerca ha estat correcta o no
     * @param reserva
@@ -644,9 +513,7 @@ public class RestaurantCopia2 {
     * @param var
     * @return 
     */
-    private static boolean MostrarReserva(TReserva[] reserva,String[] sMeses,Variables var){
-       boolean bTrue = true;
-       
+    private static void MostrarReserva(TReserva[] reserva,String[] sMeses,Variables var){
         for(int i = 0; i < 1000; i++){
             if(var.iTelefon == reserva[i].iTelefon){
                 System.out.println("---------------------\n DADES DE LA RESERVA \n---------------------\n"
@@ -655,12 +522,12 @@ public class RestaurantCopia2 {
                     + "Dia: "+reserva[i].iDiaReserva+"\n"
                     + "Mes: "+sMeses[reserva[i].iMesReserva-1]+"\n"
                     + "Telefon y numero de registre: "+reserva[i].iTelefon);
-                bTrue = false;
+                var.bBuscar = false;
                 break;
             }
         }
-        return bTrue;
     }
+    
     /**
      * Case 3, Busca la reserva del client a traves del seu numero de telefon
      * @param reserva
@@ -670,20 +537,22 @@ public class RestaurantCopia2 {
      * @param Menus 
      */
     private static void BuscarReserva (TReserva[] reserva,String[] sMeses,Variables var,Errores err,Menus Menus){
-        boolean bComprobacion = true;  
+        var.bBuscar = true;  
         
         //Mostra el menu de Buscar Reserva
         Menus(Menus.MenuBuscarReserva);
+        
         //Llegeix les dades per buscar reserva
         var.iTelefon = sLlegirNumero(var.nTelefonReserva);
 
         //Mostra la Reserva
-        bComprobacion = MostrarReserva(reserva, sMeses, var);
+        MostrarReserva(reserva, sMeses, var);
         //Comprueba si la reserva se ha mostrado, sino muestra mensaje de no encontrada
-        if(bComprobacion == true){
+        if(var.bBuscar == true){
             MostraErr(err.sReservaNoTrobada);
         }
     }
+    
     private static void EsborrarReserva (TReserva[] reserva,Variables var){
         for(int i = 0; i < var.c; i++){
             if(var.iTelefon==reserva[i].iTelefon){
@@ -699,6 +568,7 @@ public class RestaurantCopia2 {
             }
     }
 }
+    
     private static void CancelarReserva (TReserva[] reserva,String[] sMeses,Variables var,Errores err,Menus Menus){
        //Mostra el menu de Cancelar Reserva
         Menus(Menus.MenuCancelarReserva);
@@ -707,6 +577,7 @@ public class RestaurantCopia2 {
 
         EsborrarReserva(reserva, var);
     }
+    
     private static void ConnectarDB(BaseDades db){
         db.con = null;
         db.stmt = null;
@@ -728,6 +599,7 @@ public class RestaurantCopia2 {
             System.exit(0);
         }
     }
+    
     private static void QueryDB(String sQuery,BaseDades db){
         try {
             db.rs = db.stmt.executeQuery(sQuery);
@@ -736,13 +608,16 @@ public class RestaurantCopia2 {
             System.exit(0);
         }
     }
+    
     private static void UpdateDB(String sQuery,BaseDades db){
         try {
             db.stmt.executeUpdate(sQuery);
             db.con.setAutoCommit(true);
+            db.con.commit();
         } catch (Exception e) {
         }
     }
+    
     private static void DesconnectarDB(BaseDades db){
         try{
             db.stmt.close();
@@ -750,38 +625,234 @@ public class RestaurantCopia2 {
         } catch (Exception e){
         }
     }
-    private static void IntroduccionComprobacionDatos(Menus Menus,TReserva[] reserva,String nMesReserva,String[] sMeses,Variables var, String nDiaReserva){
-        boolean bReserva = true;
+    
+    /**
+     * Sol·licitar Reserva
+     * @param Menus
+     * @param reserva
+     * @param sMeses
+     * @param var 
+     */
+    private static void IntroduccionComprobacionDatos(Menus Menus,TReserva[] reserva,String[] sMeses,Variables var){
+        var.bReserva = true;
         
-        while(bReserva == true){
+        while(var.bReserva == true){
             //*Mostra el menu de solicitar reserva*//
             Menus(Menus.MenuSolicitarReserva);
 
             //Retorna la variable bReserva a true
-            bReserva = true;
+            var.bReserva = true;
             reserva[0].idReserva = var.c;
 
             //Mes de la reserva
-            bReserva = comprobacionMes(var.iMesReserva, reserva, nMesReserva, sMeses);
+            ComprovarMes(var, reserva, sMeses);
             var.iMesReserva = reserva[var.c].iMesReserva;
 
-                //Si ha introdueit un mes valid continua amb la reserva
-            if(bReserva == false){break;}
+            //Comprova si el mes es valid
+            if(var.bReserva == false){break;}
 
             //Dia de la reserva
-            var.iDiaReserva = comprobacionDia(var.iDiaReserva,nDiaReserva);
+            ComprovarDia(var);
 
             //Numero de comensals
-            while(bReserva == true){
+            while(var.bReserva == true){
                 var.iComensalsR = sLlegirNumero(var.nComensalsReserva);
-                bReserva = comprobacionComensals(var.iComensalsR);
+                ComprovarComensals(var);
             }
 
             //Nom de la reserva
             var.sNomReserva = sLlegirText(var.fNomReserva);
 
             //Numero de telefon
-            var.iTelefon = comprobacioTelefono(var.nTelReserva,var.bTelefon,reserva);
+            ComprovarTelefon(var,reserva);
         }
+        
     } 
+    
+    /**
+     * Sol·licitr Reseva
+     * @param var
+     * @param db
+     * @param sMeses 
+     */
+    private static void MostarDesarDades(Variables var,BaseDades db, String[] sMeses){
+        Scanner sc = new Scanner(System.in);
+        
+        /**Mostrar Dades**/
+        System.out.println("---------------\nRESUM DE LA RESERVA \n---------------\nNom: "+ var.sNomReserva +"\n"
+            + "Nº Comensals: "+var.iComensalsR+"\n"
+            + "Dia: "+var.iDiaReserva+"\n"
+            + "Mes: "+sMeses[var.iMesReserva-1]+"\n"
+            + "Telefon y numero de registre: "+var.iTelefon);
+
+        System.out.print("Confirmar (s/n): ");
+        var.sConfirmar = sc.next();
+        
+        /**Guardar Dades**/
+        if(var.sConfirmar.equals("s")){
+            ConnectarDB(db);
+            String sQuery = ("INSERT INTO reserves (dia,mes,comensals,telefon,nom) "
+                + "VALUES ("+ var.iDiaReserva +','+ var.iMesReserva 
+                +','+ var.iComensalsR +','+ var.iTelefon +','+ '\''+var.sNomReserva+ '\'' +")");
+            UpdateDB(sQuery, db);
+            System.out.println("\033[32mReserva enregistrada correctament\033[30m");
+            DesconnectarDB(db);
+            var.c++;
+        }else{
+            System.out.println("\033[33mReserva cancel·lada\033[30m");
+        }
+    }
+    
+    /**
+     * Inici Sessio
+     * @param var
+     * @param db
+     * @param usu 
+     */
+    private static void ComprovarUsuari(Variables var,BaseDades db,Usuari usu){
+        try {
+            var.bUsuariC = false; //L'usuari sempre serà incorrecte
+            String sQuery = "SELECT * FROM usuaris;";
+            ConnectarDB(db);
+            QueryDB(sQuery, db);
+
+            while (db.rs.next()) {
+                usu.usu = db.rs.getString("nom");
+                usu.pass = db.rs.getString("contrasenya");
+                usu.tipus = db.rs.getString("tipus");
+                if(var.sUsuari.equals(usu.usu) && var.sContrasenya.equals(usu.pass)){
+                    var.bUsuariC = true;
+                    break;
+                }
+            }
+        }  catch (Exception e) {
+        }
+        DesconnectarDB(db);
+    }
+    
+    private static void SolicitarReserva(Variables var,BaseDades db,Menus Menus,String[] sMeses,TReserva[] reserva){
+        while(true){
+            //Introduccio i comprovacio de Dades    
+            IntroduccionComprobacionDatos(Menus, reserva, sMeses, var);
+
+            //Resum i guardar les dades
+            MostarDesarDades(var, db, sMeses);
+
+            break;
+        }
+    }
+    
+    /**
+     * Recuperar contrasenya
+     * @param var
+     * @param sTUsuari 
+     */
+    private static void ComprovarCorreuUsuari(Variables var,String[][] sTUsuari){
+        for(int i = 0;i<sTUsuari.length;i++){
+            if(var.sUsuari.equals(sTUsuari[i][0])){
+                if(var.sCorreu.equals(sTUsuari[i][2])){
+                    var.bComprovacio = true;//Usuari i correu coincideixen
+
+                    var.sContrasenya = sLlegirText(var.fNovaContrasenya);
+                    var.sContrasenyaRep = sLlegirText(var.fRepContrasenya);
+
+                    //Comprova les contrasenyes coincideixen
+                    if(var.sContrasenya.equals(var.sContrasenyaRep)){
+                        sTUsuari[i][1] = var.sContrasenya;
+                        System.out.println("\033[32m" + "Contrasenya nova aplicada correctament" + "\033[30m");
+                        var.bRecuperacio = false;
+                    }else{
+                         System.out.println("\033[31m" + "Les contrasenyes no coincideixen" + "\033[30m");
+                    }
+                }
+            }
+        }
+    }
+    
+    /**
+     * 
+     * @param var
+     * @param Menus
+     * @param sTUsuari 
+     */
+    private static void RecuperarContrasenya(Variables var,Menus Menus,String[][] sTUsuari){
+        var.bRecuperacio = true;
+
+        while(var.bRecuperacio == true){
+            Menus(Menus.MenuRecuperarContrasenya);
+
+            //Comprovar si usuari i correu son corretes
+            boolean bComprovacio = false;//Sempre es fals
+
+            var.sUsuari = sLlegirText(var.fUsuari);
+
+            //Comprova si l'usuari vol cancel·lar la recuperacio de contrasenya
+            if(var.sUsuari.equals("adeu")){
+                System.out.println("\033[33m" + "Recuperacio de contrasenya cancel·lada" + "\033[30m");
+                break;
+            }
+
+            var.sCorreu = sLlegirText(var.fCorreu);
+
+            //Comprovar si el correu i l'usuari son correctes
+            ComprovarCorreuUsuari(var, sTUsuari);
+
+            //Si l'usuari i correu no conicideixen
+            if(bComprovacio == false){
+                System.out.println("\033[31m" + "Usuari o correu incorrecte" + "\033[30m");
+            }
+        }
+    }
+    
+    private static void RG_ComprovaUsuari(Variables var,String[][] sTUsuari){
+        for(int i = 0;i<sTUsuari.length;i++){
+            if(var.sUsuari.equals(sTUsuari[i][0])){
+                System.out.println("\033[31m" + "Aquest usuari ja existeix" + "\033[30m");
+                var.bRegistreC = false;//Registre incorrecte
+            }
+        }
+    }
+    
+    private static void RG_ComprovaCorreu(Variables var,String[][] sTUsuari){
+        for(int i = 0;i<sTUsuari.length;i++){
+            if(var.sCorreu.equals(sTUsuari[i][2])){
+                System.out.println("\033[31m" + "Aquest correu ja s'esta utilitzant" + "\033[30m");
+                var.bRegistreC = false;//Registre incorrecte
+            }
+        }
+    }
+    
+    private static void RG_ComprovaContrasenya(Variables var){
+        if(var.sContrasenya.equals(var.sContrasenyaRep)){
+        }else{
+            System.out.println("\033[31m" + "Les contrasenyes no coincideixen" + "\033[30m");
+            var.bRegistreC = false;//Registre incorrecte
+        }
+    }
+    
+    private static void RG_GuardaUsuari(String[][] sTUsuari,Variables var,BaseDades db){
+        ConnectarDB(db);
+        String sQuery = ("INSERT INTO usuaris (nom,contrasenya,correu,tipus) "
+            + "VALUES ("+var.sUsuari + var.sContrasenya + var.sCorreu + "'usu'" +")");
+        UpdateDB(sQuery, db);
+        System.out.println("\033[32mReserva enregistrada correctament\033[30m");
+        DesconnectarDB(db);
+        /*if(var.bRegistreC == true){
+            //Guarda les dades de l'usuari
+            while(true){
+                if(sTUsuari[iNRegistres][0] == null){//Busca una posicio buida
+                    sTUsuari[iNRegistres][0] = var.sUsuari;
+                    sTUsuari[iNRegistres][1] = var.sContrasenya;
+                    sTUsuari[iNRegistres][2] = var.sCorreu;
+                    sTUsuari[iNRegistres][3] = "usu";
+                    System.out.println("\033[32m" + "S'ha creat l'usuari correctament" + "\033[30m");
+                    break;
+                }
+                iNRegistres++;
+            }
+           */ var.bRegistre = false;//Tancamnet del menú de registres
+        //}
+    }
+    
+    
 }
