@@ -52,13 +52,10 @@ public class Variables {
         boolean bBuscar = true;     //Reserva trobada o no (Buscar Reserva)
         boolean bRegistre = true;   //Bucle Registrar usuari
         boolean bRegistreC;         //Comprovar si el registre s'ha fet correctament
-
-      
-        boolean bOP = true;//Bucle Menú Principal
-        boolean bIniciar = true;//Bucle Iniciar Sessio       
-        boolean bAdmin = true;//Bucle Menú administrador
-        boolean bReserva = true;//Cancel·lar Sol·licitud Reserva
-        boolean bModificarRes;//Bucle Menú Modificar Reserva       
+        boolean bOP = true;         //Bucle Menú Principal
+        boolean bIniciar = true;    //Bucle Iniciar Sessio       
+        boolean bAdmin = true;      //Bucle Menú administrador
+        boolean bModificarRes;      //Bucle Menú Modificar Reserva       
        
         
 
