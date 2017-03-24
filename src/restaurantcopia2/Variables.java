@@ -43,6 +43,7 @@ public class Variables {
         String fNouUsuari = "Nou nom d'Usuari:\n -> ";                                                      //Text demanr nou nom d'usuari
         String fCorreu = "Introdueix el vostre correu\n -> ";                                               //Text demanar correu (Registrar usuari)
         String fComiat = "\033[35m" + "Adeu fins la proxima!" + "\033[30m";
+        String sReservaNoTrobada="\033[31m" + "Reserva no trobada." + "\033[30m";
         
         boolean bTelefon = false;   //Telefon unic
         boolean bUsuariC;           //Comprovar si l'usuari es 
@@ -55,9 +56,9 @@ public class Variables {
         boolean bOP = true;         //Bucle Menú Principal
         boolean bIniciar = true;    //Bucle Iniciar Sessio       
         boolean bAdmin = true;      //Bucle Menú administrador
-        boolean bModificarRes;      //Bucle Menú Modificar Reserva       
-       
+        boolean bModificarRes;      //Bucle Menú Modificar Reserva    
         
+        String[][] sTUsuari = new String[99][4];//Base de dades usuari    
+        String sMeses[] = {"Gener","Febrer","Març","Abril","Maig","Juny","Juliol","Agost","Septembre","Octubre","Novembre","Desembre"};
 
-        
 }
