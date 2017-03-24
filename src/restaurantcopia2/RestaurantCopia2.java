@@ -108,7 +108,7 @@ public class RestaurantCopia2 {
                                         }
                                         
                                         case 4:{ //************************************MODIFICAR RESERVA****************************************************//
-                                            
+                                       eefe     
                                             var.bModificarRes = true;
                                             
                                             while(var.bModificarRes == true){
@@ -824,26 +824,33 @@ public class RestaurantCopia2 {
     private static void RG_GuardaUsuari(String[][] sTUsuari,Variables var,BaseDades db){
         ConnectarDB(db);
         String sQuery = ("INSERT INTO usuaris (nom,contrasenya,correu,tipus) "
-            + "VALUES ("+var.sUsuari + var.sContrasenya + var.sCorreu + "'usu'" +")");
+            + "VALUES ("+'\''+var.sUsuari +'\''+','+'\''+ var.sContrasenya +'\''+','+'\''+ var.sCorreu +'\''+',' + "'usu'" +")");
         UpdateDB(sQuery, db);
         System.out.println("\033[32mReserva enregistrada correctament\033[30m");
         DesconnectarDB(db);
-        /*if(var.bRegistreC == true){
-            //Guarda les dades de l'usuari
-            while(true){
-                if(sTUsuari[iNRegistres][0] == null){//Busca una posicio buida
-                    sTUsuari[iNRegistres][0] = var.sUsuari;
-                    sTUsuari[iNRegistres][1] = var.sContrasenya;
-                    sTUsuari[iNRegistres][2] = var.sCorreu;
-                    sTUsuari[iNRegistres][3] = "usu";
-                    System.out.println("\033[32m" + "S'ha creat l'usuari correctament" + "\033[30m");
-                    break;
-                }
-                iNRegistres++;
-            }
-           */ var.bRegistre = false;//Tancamnet del menú de registres
+         var.bRegistre = false;//Tancamnet del menú de registres
         //}
     }
     
+    private static void ComprovarUsuari(Variables var,BaseDades db,Usuari usu){
+        try {
+            var.bUsuariC = false; //L'usuari sempre serà incorrecte
+            String sQuery = "SELECT * FROM usuaris;";
+            ConnectarDB(db);
+            QueryDB(sQuery, db);
+
+            while (db.rs.next()) {
+                usu.usu = db.rs.getString("nom");
+                usu.pass = db.rs.getString("contrasenya");
+                usu.tipus = db.rs.getString("tipus");
+                if(var.sUsuari.equals(usu.usu) && var.sContrasenya.equals(usu.pass)){
+                    var.bUsuariC = true;
+                    break;
+                }
+            }
+        }  catch (Exception e) {
+        }
+        DesconnectarDB(db);
+    }
     
 }
