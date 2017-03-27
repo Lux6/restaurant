@@ -45,18 +45,19 @@ public class Variables {
         String fComiat = "\033[35m" + "Adeu fins la proxima!" + "\033[30m";
         String sReservaNoTrobada="\033[31m" + "Reserva no trobada." + "\033[30m";
         
-        boolean bTelefon = false;   //Telefon unic
-        boolean bUsuariC;           //Comprovar si l'usuari es 
-        boolean bReserva = true;    //Comprovar si es continua amb la reserva
-        boolean bRecuperacio;       //Bucle Recuperacio Contrasenya
-        boolean bComprovacio;       //Usuri i correu coincideixen (?)
-        boolean bBuscar = true;     //Reserva trobada o no (Buscar Reserva)
-        boolean bRegistre = true;   //Bucle Registrar usuari
-        boolean bRegistreC;         //Comprovar si el registre s'ha fet correctament
-        boolean bOP = true;         //Bucle Menú Principal
-        boolean bIniciar = true;    //Bucle Iniciar Sessio       
-        boolean bAdmin = true;      //Bucle Menú administrador
-        boolean bModificarRes;      //Bucle Menú Modificar Reserva    
+        boolean bTelefon = false;       //Telefon unic
+        boolean bUsuariC;               //Comprovar si l'usuari es 
+        boolean bReserva = true;        //Comprovar si es continua amb la reserva
+        boolean bRecuperacio;           //Bucle Recuperacio Contrasenya
+        boolean bComprovacio;           //Usuri i correu coincideixen (?)
+        boolean bBuscar = true;         //Reserva trobada o no (Buscar Reserva)
+        boolean bRegistre = true;       //Bucle Registrar usuari
+        boolean bRegistreC;             //Comprovar si el registre s'ha fet correctament
+        boolean bCancelarRes = true;    //Bucle Menú Principal
+        boolean bIniciar = true;        //Bucle Iniciar Sessio       
+        boolean bAdmin = true;          //Bucle Menú administrador
+        boolean bModificarRes;          //Bucle Menú Modificar Reserva
+        boolean bModificarOps;          //Bucle Menú Modificar Opcions
         
         String[][] sTUsuari = new String[99][4];//Base de dades usuari    
         String sMeses[] = {"Gener","Febrer","Març","Abril","Maig","Juny","Juliol","Agost","Septembre","Octubre","Novembre","Desembre"};
