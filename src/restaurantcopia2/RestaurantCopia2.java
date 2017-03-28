@@ -15,18 +15,13 @@ public class RestaurantCopia2 {
     public static void main(String[] args) {
         //*Reservar espacio de clases*//
         Scanner sc = new Scanner(System.in);
-        TReserva reserva[] = new TReserva[1000];
+        TReserva reserva = new TReserva();
         Menus Menus = new Menus();
         Variables var = new Variables();
         BaseDades db = new BaseDades();
         Usuari usu = new Usuari();
         Reserva res = new Reserva();
-        
-        //********** Reserva espai array class **********//
-        for(int i=0; i<1000; i++)reserva[i] = new TReserva();
-        
-        //**********************************************//
-        
+                
         while(true){
             
             //Mostra el menu principal i llegeix opció del menu
@@ -220,14 +215,16 @@ public class RestaurantCopia2 {
      * @param reserva
      * @return 
      */
-    public static void ComprovarTelefon(Variables var,TReserva[] reserva){
+    public static void ComprovarTelefon(Variables var,TReserva reserva){
         while(true){
             var.bTelefon = true;
             var.iTelefon = sLlegirNumero(var.nTelReserva);
+            
             //Comprova que el telefon estigui dintre del rang valid
             if(var.iTelefon < 1000000000 && var.iTelefon > 600000000){
                 for(int i = 0;i < 1000;i++){
-                    if(var.iTelefon == reserva[i].iTelefon){
+                    
+                    if(var.iTelefon == reserva.iTelefon){
                         var.bTelefon = false;
                     }
                 }
@@ -253,17 +250,19 @@ public class RestaurantCopia2 {
      * @param sMeses
      * @return 
      */
-    public static void ComprovarMes(Variables var,TReserva[] reserva){
-            if(var.iMesReserva == 13){//Comprova si es 13 per cancel·lar
-                System.out.println("\033[33m" + "Sol·licitud de reserva cancel·lada" + "\033[30m");
-                var.bCancelarRes = true;
-            }else if(var.iMesReserva <= 12 && var.iMesReserva >= 0){
-                System.out.println("Ha escollit "+var.sMeses[var.iMesReserva-1]);
-                reserva[var.c].iMesReserva = var.iMesReserva;
-                var.bReserva = false;
-            }else{//Mes introduit erroni
-                sOpcioInvalida();
-            }
+    public static void ComprovarMes(Variables var){
+        var.bCancelarRes = false;
+
+        if(var.iMesReserva == 13){//Comprova si es 13 per cancel·lar
+            var.bReserva = false;
+
+        }else if(var.iMesReserva <= 12 && var.iMesReserva >= 0){
+            System.out.println("Ha escollit "+var.sMeses[var.iMesReserva-1]);
+            var.bReserva = false;
+
+        }else{//Mes introduit erroni
+            sOpcioInvalida();
+        }
     }
     
     /**
@@ -273,19 +272,33 @@ public class RestaurantCopia2 {
     * @param var
     * @return 
     */
-    public static void MostrarReserva(TReserva[] reserva,Variables var){
-        for(int i = 0; i < 1000; i++){
-            if(var.iTelefon == reserva[i].iTelefon){
-                System.out.println("---------------------\n DADES DE LA RESERVA \n---------------------\n"
-                    + "Nom: "+reserva[i].sNomReserva+"\n"
-                    + "Nº Comensals: "+reserva[i].iComensalsR+"\n"
-                    + "Dia: "+reserva[i].iDiaReserva+"\n"
-                    + "Mes: "+var.sMeses[reserva[i].iMesReserva-1]+"\n"
-                    + "Telefon y numero de registre: "+reserva[i].iTelefon);
-                var.bBuscar = false;
-                break;
+    public static void MostrarReserva(Variables var,BaseDades db,Reserva res){
+        try {
+            String sQuery = "SELECT * FROM reserves where telefon= "+var.iTelefon+";";
+            ConnectarDB(db);
+            QueryDB(sQuery, db);
+
+            while (db.rs.next()) {
+                res.dia = db.rs.getInt("dia");
+                res.mes = db.rs.getInt("mes");
+                res.comensals = db.rs.getInt("comensals");
+                res.nresserva = db.rs.getString("nom");
+                res.telefon = db.rs.getInt("telefon");
+                if(var.iTelefon == res.telefon){   
+                    System.out.println("---------------------\n DADES DE LA RESERVA \n---------------------\n"
+                        + "Nom: "+res.nresserva+"\n"
+                        + "Nº Comensals: "+res.comensals+"\n"
+                        + "Dia: "+res.dia+"\n"
+                        + "Mes: "+var.sMeses[res.mes]+"\n"
+                        + "Telefon y numero de registre: "+res.telefon);
+
+                    var.bBuscar = false;
+                    break;
+                }
             }
+            } catch (Exception e) {
         }
+        DesconnectarDB(db);
     }
     
     /**
@@ -296,7 +309,7 @@ public class RestaurantCopia2 {
      * @param err
      * @param Menus 
      */
-    public static void BuscarReserva (TReserva[] reserva,Variables var,Menus Menus){
+    public static void BuscarReserva (Variables var,Menus Menus,BaseDades db,Reserva res){
         var.bBuscar = true;  
         
         //Mostra el menu de Buscar Reserva
@@ -306,14 +319,14 @@ public class RestaurantCopia2 {
         var.iTelefon = sLlegirNumero(var.nTelefonReserva);
 
         //Mostra la Reserva
-        MostrarReserva(reserva,var);
+        MostrarReserva(var, db, res);
         //Comprueba si la reserva se ha mostrado, sino muestra mensaje de no encontrada
         if(var.bBuscar == true){
             Mostra(var.sReservaNoTrobada);
         }
     }
     
-    public static void EsborrarReserva (TReserva[] reserva,Variables var,BaseDades db){
+    public static void EsborrarReserva (Variables var,BaseDades db){
         ConnectarDB(db);
         String sQuery = ("DELETE FROM reserves where telefon="+var.iTelefon+";");
         UpdateDB(sQuery, db);
@@ -321,13 +334,13 @@ public class RestaurantCopia2 {
         DesconnectarDB(db);
     }
     
-    public static void CancelarReserva (TReserva[] reserva,Variables var,Menus Menus,BaseDades db){
+    public static void CancelarReserva (Variables var,Menus Menus,BaseDades db){
        //Mostra el menu de Cancelar Reserva
         Menus(Menus.MenuCancelarReserva);
         //Llegeix les dades per cancelar reserva
         var.iTelefon = sLlegirNumero(var.nTelefonReserva);
 
-        EsborrarReserva(reserva, var, db);
+        EsborrarReserva(var, db);
     }
     
     public static void ConnectarDB(BaseDades db){
@@ -386,11 +399,10 @@ public class RestaurantCopia2 {
      * @param sMeses
      * @param var 
      */
-    public static void IntroduccionComprobacionDatos(Menus Menus,TReserva[] reserva,Variables var,BaseDades db){
-        var.bReserva = true;
+    public static void IntroduccionComprobacionDatos(Menus Menus,Variables var,BaseDades db,Reserva res){
         var.bCancelarRes = false;
         
-        while(var.bReserva == true){
+        while(true){
             //*Mostra el menu de solicitar reserva*//
             Menus(Menus.MenuSolicitarReserva);
 
@@ -398,14 +410,14 @@ public class RestaurantCopia2 {
             var.bReserva = true;
             while(var.bReserva == true){
                 var.iMesReserva = sLlegirNumero(var.nMesReserva);
-                ComprovarMes(var, reserva);
-                
-                var.iMesReserva = reserva[var.c].iMesReserva;
+                ComprovarMes(var);
             }
 
             //Comprova si el mes es valid
-            if(var.bCancelarRes == true)
-                {break;}
+            if(var.iMesReserva == 13){
+                System.out.println("\033[33m" + "Sol·licitud de reserva cancel·lada" + "\033[30m");
+                break;
+            }
 
             //Dia de la reserva
             var.bReserva = true;
@@ -425,10 +437,25 @@ public class RestaurantCopia2 {
             var.sNomReserva = sLlegirText(var.fNomReserva);
 
             //Numero de telefon
-            ComprovarTelefon(var,reserva);
+            var.bReserva = true;
+            while(var.bReserva == true){
+                var.iTelefon = sLlegirNumero(var.nTelReserva);
+                MD_ComprovarTelefon(var, db, res);
+                
+                if(var.bTelefon == true){
+                    break;
+                }else{
+                    Mostra("\033[31m" + "Telefon ja existent o invalid!" + "\033[30m");
+                }
+            }
             
+            // MostarDesarDades(var, db);
             MostarDesarDades(var, db);
+            
+            break;
         }
+        
+        
         
     } 
     
@@ -448,7 +475,7 @@ public class RestaurantCopia2 {
             + "Mes: "+var.sMeses[var.iMesReserva-1]+"\n"
             + "Telefon y numero de registre: "+var.iTelefon);
 
-        System.out.print("Confirmar (s/n): ");
+        System.out.print("Confirmar (s): ");
         var.sConfirmar = sc.next();
         
         /**Guardar Dades**/
@@ -458,10 +485,9 @@ public class RestaurantCopia2 {
                 + "VALUES ("+ var.iDiaReserva +','+ var.iMesReserva 
                 +','+ var.iComensalsR +','+ var.iTelefon +','+ '\''+var.sNomReserva+ '\'' +")");
             UpdateDB(sQuery, db);
-            System.out.println("\033[32mReserva enregistrada correctament\033[30m");
-            var.bReserva = false;
-            
             DesconnectarDB(db);
+            System.out.println("\033[32mReserva enregistrada correctament\033[30m");
+            
         }else{
             System.out.println("\033[33mReserva cancel·lada\033[30m");
         }
@@ -494,10 +520,10 @@ public class RestaurantCopia2 {
         DesconnectarDB(db);
     }
     
-    public static void SolicitarReserva(Variables var,BaseDades db,Menus Menus,TReserva[] reserva){
+    public static void SolicitarReserva(Variables var,BaseDades db,Menus Menus,Reserva res){
         while(true){
             //Introduccio i comprovacio de Dades    
-            IntroduccionComprobacionDatos(Menus, reserva, var, db);
+            IntroduccionComprobacionDatos(Menus, var, db, res);
 
             //Resum i guardar les dades
             MostarDesarDades(var, db);
@@ -513,8 +539,11 @@ public class RestaurantCopia2 {
      */
     public static void ComprovarCorreuUsuari(Variables var){
         for(int i = 0;i<var.sTUsuari.length;i++){
+            
             if(var.sUsuari.equals(var.sTUsuari[i][0])){
+                
                 if(var.sCorreu.equals(var.sTUsuari[i][2])){
+                    
                     var.bComprovacio = true;//Usuari i correu coincideixen
 
                     var.sContrasenya = sLlegirText(var.fNovaContrasenya);
@@ -604,33 +633,41 @@ public class RestaurantCopia2 {
          var.bRegistre = false;//Tancamnet del menú de registres
     }
     
-    private static void MD_ComprovarTelefon(Variables var,BaseDades db,Reserva res,Menus Menus,TReserva[] reserva){
+    private static void MD_ComprovarTelefon(Variables var,BaseDades db,Reserva res){
         var.bModificarRes = true;
+        var.bTelefon = true;
         
-        try {
-            String sQuery = "SELECT * FROM reserves;";
-            ConnectarDB(db);
-            QueryDB(sQuery, db);
+        if(var.iTelefon < 1000000000 && var.iTelefon > 600000000){
+            try {
+                String sQuery = "SELECT * FROM reserves;";
+                ConnectarDB(db);
+                QueryDB(sQuery, db);
 
-            while (db.rs.next()) {
-                res.dia = db.rs.getInt("dia");
-                res.mes = db.rs.getInt("mes");
-                res.comensals = db.rs.getInt("comensals");
-                res.nresserva = db.rs.getString("nom");
-                res.telefon = db.rs.getInt("telefon");
-                
-                if(var.iTelefon == res.telefon){
-                    var.bModificarRes = false;
-                    var.bModificarOps = true;
-                    break;
+                while (db.rs.next()) {
+                    res.dia = db.rs.getInt("dia");
+                    res.mes = db.rs.getInt("mes");
+                    res.comensals = db.rs.getInt("comensals");
+                    res.nresserva = db.rs.getString("nom");
+                    res.telefon = db.rs.getInt("telefon");
+
+                    if(var.iTelefon == res.telefon){
+                        var.bModificarRes = false;
+                        var.bModificarOps = true;
+                        var.bTelefon = false;
+
+                        break;
+                    }
                 }
+            }  catch (Exception e) {
             }
-        }  catch (Exception e) {
+            DesconnectarDB(db);
+        }else{
+            Mostra("\033[31m" + "Numero de telefon invalid!" + "\033[30m");
+            var.bTelefon = false;
         }
-        DesconnectarDB(db);
     }
     
-    private static void MD_MenuModificar(Variables var,Reserva res,BaseDades db,Menus Menus,TReserva[] reserva){
+    private static void MD_MenuModificar(Variables var,Reserva res,BaseDades db,Menus Menus,TReserva reserva){
         while(var.bModificarOps == true){
             Mostra("---------------\nDADES DE LA RESERVA\n---------------\n"
             + "Nom: " + res.nresserva + "\n"
@@ -660,7 +697,7 @@ public class RestaurantCopia2 {
                     break;
                 }
                 case 4:{ //MODIFICAR MES
-                    MD_ModificarMes(var, res, db, reserva);
+                    MD_ModificarMes(var, res, db);
 
                     break;
                 }
@@ -723,11 +760,16 @@ public class RestaurantCopia2 {
         }
     }
     
-    private static void MD_ModificarMes(Variables var,Reserva res,BaseDades db,TReserva[] reserva){
+    private static void MD_ModificarMes(Variables var,Reserva res,BaseDades db){
         while(true){
+            
             Mostra("Mes seleccionat actualment: "+res.mes);
-            var.iMesReserva = sLlegirNumero(var.nMesReserva);
-            ComprovarMes(var, reserva);
+            var.bReserva = true;
+            
+            while(var.bReserva == true){
+                var.iMesReserva = sLlegirNumero(var.nMesReserva);
+                ComprovarMes(var);
+            }
 
             if(var.bReserva == false){
                 ConnectarDB(db);
@@ -740,7 +782,7 @@ public class RestaurantCopia2 {
         }
     }
     
-    public static void MD_ModificarReserva(Variables var,Menus Menus,BaseDades db, TReserva[] reserva,Reserva res){
+    public static void MD_ModificarReserva(Variables var,Menus Menus,BaseDades db, TReserva reserva,Reserva res){
         var.bModificarRes = true;
         var.bModificarOps = false;
 
@@ -755,7 +797,7 @@ public class RestaurantCopia2 {
                 break;
             }
 
-            MD_ComprovarTelefon(var, db, res, Menus, reserva);
+            MD_ComprovarTelefon(var, db, res);
 
             if(var.bModificarRes == true){
                 Mostra("\033[31m" + "Telefon no trobat" + "\033[30m");
@@ -798,7 +840,7 @@ public class RestaurantCopia2 {
         DesconnectarDB(db);
     }
     
-    public static void MenuClient(Menus Menus,Variables var,BaseDades db,Reserva res,TReserva[] reserva){
+    public static void MenuClient(Menus Menus,Variables var,BaseDades db,Reserva res,TReserva reserva){
         while(var.iOpcioSolicitud != 5){    
 
             //Menu principal
@@ -807,17 +849,17 @@ public class RestaurantCopia2 {
 
             switch(var.iOpcioSolicitud){
                 case 1:{ //*************************************SOLICITAR RESERVA*****************************************************/
-                    SolicitarReserva(var, db, Menus, reserva);
+                    SolicitarReserva(var, db, Menus, res);
                     break;
                 } 
 
                 case 2:{ //************************************CANCELAR RESERVA******************************************************//
-                    CancelarReserva(reserva, var, Menus, db);
+                    CancelarReserva(var, Menus, db);
                     break;
                 }
 
                 case 3:{ //*************************************BUSCAR RESERVA******************************************************//
-                    BuscarReserva(reserva,var, Menus);
+                    BuscarReserva(var, Menus, db, res);
                     break;
                 }
 
@@ -920,7 +962,7 @@ public class RestaurantCopia2 {
         }
     }
     
-    public static void IniciSessio(Menus Menus,Variables var,BaseDades db,Reserva res,TReserva[] reserva,Usuari usu){
+    public static void IniciSessio(Menus Menus,Variables var,BaseDades db,Reserva res,TReserva reserva,Usuari usu){
         while(var.bIniciar == true){
             Mostra("----------------\n INICIAR SESSIÓ \n----------------");
 
