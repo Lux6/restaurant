@@ -266,8 +266,9 @@ class restaurantFuncionsProcediments extends restaurantBaseDadesMD{
      */
     public static void IntroduccionComprobacionDatos(Menus Menus,Variables var,BaseDades db,Reserva res){
         var.bCancelarRes = false;
+        boolean bBolea = true;
         
-        while(true){
+        while(bBolea == true){
             //*Mostra el menu de solicitar reserva*//
             Menus(Menus.MenuSolicitarReserva);
 
@@ -281,43 +282,41 @@ class restaurantFuncionsProcediments extends restaurantBaseDadesMD{
             //Comprova si el mes es valid
             if(var.iMesReserva == 13){
                 System.out.println("\033[33m" + "Sol·licitud de reserva cancel·lada" + "\033[30m");
-                break;
+                bBolea = false;
             }
-
-            //Dia de la reserva
-            var.bReserva = true;
-            while(var.bReserva == true){
-                var.iDiaReserva = sLlegirNumero(var.nDiaReserva);
-                ComprovarDia(var);
-            }
-
-            //Numero de comensals
-            var.bReserva = true;
-            while(var.bReserva == true){
-                var.iComensalsR = sLlegirNumero(var.nComensalsReserva);
-                ComprovarComensals(var);
-            }
-
-            //Nom de la reserva
-            var.sNomReserva = sLlegirText(var.fNomReserva);
-
-            //Numero de telefon
-            var.bReserva = true;
-            while(var.bReserva == true){
-                var.iTelefon = sLlegirNumero(var.nTelReserva);
-                MD_ComprovarTelefon(var, db, res);
-                
-                if(var.bTelefon == true){
-                    break;
-                }else{
-                    Mostra("\033[31m" + "Telefon ja existent o invalid!" + "\033[30m");
+            if(bBolea == true){
+                //Dia de la reserva
+                var.bReserva = true;
+                while(var.bReserva == true){
+                    var.iDiaReserva = sLlegirNumero(var.nDiaReserva);
+                    ComprovarDia(var);
                 }
-            }
+
+                //Numero de comensals
+                var.bReserva = true;
+                while(var.bReserva == true){
+                    var.iComensalsR = sLlegirNumero(var.nComensalsReserva);
+                    ComprovarComensals(var);
+                }
+
+                //Nom de la reserva
+                var.sNomReserva = sLlegirText(var.fNomReserva);
+
+                //Numero de telefon
+                var.bReserva = true;
+                while(var.bReserva == true){
+                    var.iTelefon = sLlegirNumero(var.nTelReserva);
+                    MD_ComprovarTelefon(var, db, res);
+
+                    if(var.bTelefon == true){
+                        break;
+                    }else{
+                        Mostra("\033[31m" + "Telefon ja existent o invalid!" + "\033[30m");
+                    }
+                }
+        }
             
-            // MostarDesarDades(var, db);
-            MostarDesarDades(var, db);
-            
-            break;
+        bBolea = false;
         }
         
         
@@ -334,13 +333,13 @@ class restaurantFuncionsProcediments extends restaurantBaseDadesMD{
         Scanner sc = new Scanner(System.in);
         
         /**Mostrar Dades**/
-        System.out.println("---------------\nRESUM DE LA RESERVA \n---------------\nNom: "+ var.sNomReserva +"\n"
+        Mostra("---------------\nRESUM DE LA RESERVA \n---------------\nNom: "+ var.sNomReserva +"\n"
             + "Nº Comensals: "+var.iComensalsR+"\n"
             + "Dia: "+var.iDiaReserva+"\n"
             + "Mes: "+var.sMeses[var.iMesReserva-1]+"\n"
             + "Telefon y numero de registre: "+var.iTelefon);
 
-        System.out.print("Confirmar (s): ");
+        Mostra("Confirmar (s): ");
         var.sConfirmar = sc.next();
         
         /**Guardar Dades**/
@@ -351,10 +350,10 @@ class restaurantFuncionsProcediments extends restaurantBaseDadesMD{
                 +','+ var.iComensalsR +','+ var.iTelefon +','+ '\''+var.sNomReserva+ '\'' +")");
             UpdateDB(sQuery, db);
             DesconnectarDB(db);
-            System.out.println("\033[32mReserva enregistrada correctament\033[30m");
+            Mostra("\033[32mReserva enregistrada correctament\033[30m");
             
         }else{
-            System.out.println("\033[33mReserva cancel·lada\033[30m");
+            Mostra("\033[33mReserva cancel·lada\033[30m");
         }
     }
     
