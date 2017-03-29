@@ -1,18 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package restaurantcopia2;
 
 import java.sql.DriverManager;
 import static restaurantcopia2.restaurantFuncionsProcediments.*;
 
-/**
- *
- * @author jerje
- */
-public final class restaurantBaseDadesMD extends Menus{
+class restaurantBaseDadesMD extends Menus{
     
     
     public static void ConnectarDB(BaseDades db){
@@ -70,7 +62,7 @@ public final class restaurantBaseDadesMD extends Menus{
      * @param Menus
      * @param db 
      */
-    public void RG_RegistreUsuari(Variables var,Menus Menus,BaseDades db){
+    public static void RG_RegistreUsuari(Variables var,Menus Menus,BaseDades db){
                      var.bRegistre = true;                  
                     
                     while(var.bRegistre == true){
