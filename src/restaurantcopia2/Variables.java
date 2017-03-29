@@ -5,11 +5,7 @@
  */
 package restaurantcopia2;
 
-/**
- *
- * @author jerje
- */
-public class Variables {
+class Variables {
         int iOpcioPrincipal;    //Opcio menú
         int iOpcioReserva;      //Opcio reserva
         int iOpcioSolicitud;    //Opcio Sol·licitud Reserva

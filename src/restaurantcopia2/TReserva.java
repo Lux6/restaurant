@@ -6,5 +6,5 @@ class TReserva{
     int iDiaReserva;
     int iMesReserva;
     int iComensalsR;
-    long iTelefon;
+    int iTelefon;
 }

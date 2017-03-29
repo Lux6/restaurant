@@ -1,7 +1,7 @@
 
 package restaurantcopia2;
 
-class Menus {
+class Menus{
         String[] MenuPrincipal = {"------------\n RESTAURANT \n------------\n "
             + "[1] Iniciar Sessio\n "
             + "[2] Registrar-se\n "

@@ -1,19 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package restaurantcopia2;
 
 import java.sql.DriverManager;
 import java.util.Scanner;
 import static restaurantcopia2.restaurantBaseDadesMD.*;
 
-/**
- *
- * @author jerje
- */
-public class restaurantFuncionsProcediments extends restaurantBaseDadesMD{
+
+class restaurantFuncionsProcediments extends restaurantBaseDadesMD{
         //*Reservar espacio de clases*//
         Scanner sc = new Scanner(System.in);
         TReserva reserva = new TReserva();
