@@ -1,12 +1,10 @@
-
 package restaurantcopia2;
 
 class Menus{
         String[] MenuPrincipal = {"------------\n RESTAURANT \n------------\n "
             + "[1] Iniciar Sessio\n "
             + "[2] Registrar-se\n "
-            + "[3] Recuperar Contrasenya\n "
-            + "[4] Tancar aplicació\n "};
+            + "[3] Tancar aplicació\n "};
         
         String[] MenuReserves = {"---------------\n MENU RESERVES\n---------------\n "
             + "[1] Sol·licitar reserva\n "
@@ -44,6 +42,6 @@ class Menus{
         String[] MenuBuscarReserva = {"-----------------\n BUSQUEDA RESERVA \n-----------------\n "
             + "Introeudix '13' per tornar al menú\n "};
         
-        String[] MenuRecuperarContrasenya= {"-----------------------\n RECUPERAR CONTRASENYA \n-----------------------\n "
-            + "Escriu 'adeu' per tornar al menu\n "};
+        
+        String sMeses[] = {"Gener","Febrer","Març","Abril","Maig","Juny","Juliol","Agost","Septembre","Octubre","Novembre","Desembre"};
 }
